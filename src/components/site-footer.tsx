@@ -4,7 +4,7 @@ import {useCMSContent} from './cms-content';
 import {sectionVisible} from '@/cms/visibility-labels';
 
 function FooterAsset({ name, extension = "svg" }: { name: string; extension?: string }) {
-  return <picture><source media="(max-width: 600px)" srcSet={`/figma/footer/mobile-${name}.${extension}`} /><img src={`/figma/footer/desktop-${name}.${extension}`} alt="" /></picture>;
+  return <picture><source media="(max-width: 600px)" srcSet={`/figma/footer/mobile-${name}.${extension}`} /><img src={`/figma/footer/desktop-${name}.${extension}`} alt="" loading="lazy" decoding="async" /></picture>;
 }
 export function SiteFooter({ onInfo, onRentCar }: { onInfo: (title: string) => void; onRentCar: () => void }) {
   const {visibility,settings,homePage:{footer:f}}=useCMSContent();
@@ -14,7 +14,7 @@ export function SiteFooter({ onInfo, onRentCar }: { onInfo: (title: string) => v
   return <footer className="site-footer">
     <div className="footer-main">
       <div className="footer-company">
-        <a href="/" aria-label="Deshaatan home"><picture><img src={f.logo} alt="" /></picture></a>
+        <a href="/" aria-label="Deshaatan home"><picture><img src={f.logo} alt="" loading="lazy" decoding="async" /></picture></a>
         <p>{f.description} <a href={f.aboutURL}>{f.readMore}</a></p>
         <address>
           <a href={`tel:${settings.phone.replace(/[^+0-9]/g,'')}`}><FooterAsset name="imgVuesaxLinearCallCalling" />{settings.phone}</a>
@@ -25,8 +25,8 @@ export function SiteFooter({ onInfo, onRentCar }: { onInfo: (title: string) => v
       <div className="footer-menu"><h3>{f.mainTitle}</h3>{f.mainLinks.map(link)}</div>
       <div className="footer-menu"><h3>{f.quickTitle}</h3>{f.quickLinks.map(link)}</div>
       <div className="mobile-footer-menu mobile-only">
-        <details><summary>{f.mainTitle}<span className="footer-arrow"><img src="/figma/footer/mobile-imgVector.svg" alt="" /></span></summary><div>{f.mainLinks.map(link)}</div><img className="footer-divider" src="/figma/footer/mobile-imgLine161.svg" alt="" /></details>
-        <details><summary>{f.quickTitle}<span className="footer-arrow"><img src="/figma/footer/mobile-imgVector.svg" alt="" /></span></summary><div>{f.quickLinks.map(link)}</div><img className="footer-divider" src="/figma/footer/mobile-imgLine161.svg" alt="" /></details>
+        <details><summary>{f.mainTitle}<span className="footer-arrow"><img src="/figma/footer/mobile-imgVector.svg" alt="" loading="lazy" decoding="async" /></span></summary><div>{f.mainLinks.map(link)}</div><img className="footer-divider" src="/figma/footer/mobile-imgLine161.svg" alt="" loading="lazy" decoding="async" /></details>
+        <details><summary>{f.quickTitle}<span className="footer-arrow"><img src="/figma/footer/mobile-imgVector.svg" alt="" loading="lazy" decoding="async" /></span></summary><div>{f.quickLinks.map(link)}</div><img className="footer-divider" src="/figma/footer/mobile-imgLine161.svg" alt="" loading="lazy" decoding="async" /></details>
       </div>
       <div className="footer-social"><h3>{f.socialTitle}</h3><div>{[
         // ["Facebook", "imgContainer"],

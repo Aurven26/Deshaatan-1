@@ -26,7 +26,7 @@ export function ShareMenu({ title, icon, onCopy, inline = false, href = "/#desti
     setOpen(false);
   }
   return <div ref={root} className={`share-menu ${inline ? "share-inline" : ""} ${open ? "open" : ""}`}>
-    <button className="share-button" aria-label={`Share ${title}`} aria-expanded={open} aria-controls={menuId} onClick={() => setOpen(value => !value)}><img className="icon" src={icon.startsWith("/") ? icon : `/figma/${icon}.svg`} alt="" />{inline && "Share"}</button>
+    <button className="share-button" aria-label={`Share ${title}`} aria-expanded={open} aria-controls={menuId} onClick={() => setOpen(value => !value)}><img className="icon" src={icon.startsWith("/") ? icon : `/figma/${icon}.svg`} alt="" loading="lazy" decoding="async" />{inline && "Share"}</button>
     <div id={menuId} className="share-popover" aria-label={`Sharing options for ${title}`}>
       <button aria-label="Share on WhatsApp" onClick={() => openPlatform("whatsapp")}><ShareGlyph kind="whatsapp" /><span>WhatsApp</span></button>
       <button aria-label="Share on Facebook" onClick={() => openPlatform("facebook")}><ShareGlyph kind="facebook" /><span>Facebook</span></button>

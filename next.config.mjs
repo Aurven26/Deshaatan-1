@@ -16,6 +16,10 @@ const csp = [
 
 export default withPayload({
   poweredByHeader: false,
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    qualities: [75],
+  },
   async headers() {
     return [{source: '/:path*', headers: [
       {key: 'Content-Security-Policy', value: csp},

@@ -22,17 +22,29 @@ export const homeDefaults={
   footer:{enabled:true,logo:'/figma/footer/desktop-img2490934664304.svg',description:'Deshaatan helps travellers discover India through thoughtful itineraries, trusted local expertise, memorable stays, iconic landmarks, and authentic hidden gems.',readMore:'Read more',aboutURL:'/about-us',mainTitle:'IN THE MAIN SECTION',quickTitle:'QUICK LINKS',socialTitle:'FOLLOW US',copyright:'© 2026 Deshaatan.com All rights reserved.',mobileCopyright:'Copyright © Deshaatan. All Rights Reserved.',mainLinks:[{label:'Tour Package',href:'/tour-packages',action:'link'},{label:'Top Tourist Attractions of India',href:'/#guides',action:'link'},{label:'Corporate Tour',href:'',action:'corporate'},{label:'Contact Us',href:'/contact-us',action:'link'},{label:'Rent A Car',href:'',action:'car-rental'}],quickLinks:[{label:'About Us',href:'/about-us',action:'link'},{label:'FAQ',href:'/faq',action:'link'},{label:'We are Hiring',href:'',action:'hiring'},{label:'Partner With Deshaatan',href:'',action:'partner'},{label:'Cancellation & Refund Policy',href:'/refund-and-cancellation-policy',action:'link'}],legalLinks:[{label:'Terms & Conditions',href:'/terms-and-conditions',action:'link'},{label:'About Us',href:'/about-us',action:'link'},{label:'Privacy Policy',href:'/privacy-policy',action:'link'},{label:'Copyright Policies',href:'/copyright-policy',action:'link'}]},
 };
 export type HomePageContent=typeof homeDefaults;
-export function mediaURL(value:unknown,fallback=''):string {
+export function mediaURL(value:unknown,fallback='',size?:'card'|'hero'):string {
   if(typeof value==='string')return value;
-  if(value && typeof value==='object' && 'filename' in value && typeof value.filename==='string')return `/cms-api/media/file/${encodeURIComponent(value.filename)}`;
+  if(value && typeof value==='object'){
+    const media=value as {filename?:unknown;sizes?:Record<string,{url?:unknown;filename?:unknown}|undefined>};
+    const variant=size ? media.sizes?.[size] : undefined;
+    // The Payload `url` may contain the build machine's serverURL (localhost in
+    // development). A relative file route is portable across local and Vercel.
+    if(typeof variant?.filename==='string')return `/cms-api/media/file/${encodeURIComponent(variant.filename)}`;
+    if(typeof media.filename==='string')return `/cms-api/media/file/${encodeURIComponent(media.filename)}`;
+  }
   return fallback;
 }
 export function resolveHomePage(value:unknown):HomePageContent {
-  function merge(fallback:unknown,actual:unknown):unknown {
+  function merge(fallback:unknown,actual:unknown,path=''):unknown {
     if(actual===null || actual===undefined)return fallback;
-    if(typeof fallback==='string')return typeof actual==='object'?mediaURL(actual,fallback):actual;
-    if(Array.isArray(fallback))return Array.isArray(actual)?actual.map(item=>merge(fallback[0]||{},item)):fallback;
-    if(fallback && typeof fallback==='object')return Object.fromEntries(Object.entries(fallback).map(([key,child])=>[key,merge(child,(actual as Record<string,unknown>)[key])]));
+    if(typeof fallback==='string'){
+      const size=path==='hero.banners.image'?'hero'
+        :['categories.items.image','religious.backgroundImage','religious.featuredImage','testimonials.defaultAvatar','airport.decorationImage','airport.carImage'].includes(path)?'card'
+        :undefined;
+      return typeof actual==='object'?mediaURL(actual,fallback,size):actual;
+    }
+    if(Array.isArray(fallback))return Array.isArray(actual)?actual.map(item=>merge(fallback[0]||{},item,path)):fallback;
+    if(fallback && typeof fallback==='object')return Object.fromEntries(Object.entries(fallback).map(([key,child])=>[key,merge(child,(actual as Record<string,unknown>)[key],path?`${path}.${key}`:key)]));
     return actual;
   }
   return merge(homeDefaults,value) as HomePageContent;

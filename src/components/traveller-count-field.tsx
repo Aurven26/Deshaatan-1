@@ -44,7 +44,7 @@ export default function TravellerCountField({id: suppliedId, label = "Traveller 
       setOpen(!open);
     }}>
       <span>{selected ? compactSummary && !children ? `${adults} ${adults === 1 ? "Adult" : "Adults"}` : `${adults} ${adults === 1 ? "adult" : "adults"}, ${children} ${children === 1 ? "child" : "children"}` : placeholder}</span>
-      <img src={chevronSrc} alt="" />
+      <img src={chevronSrc} alt="" loading="lazy" decoding="async" />
     </button>
     {open && <div className={s.travellerPicker} id={`${id}-travellers`} role="dialog" aria-label="Choose travellers" data-placement={openAbove ? "above" : "below"}>
       {[{label:"Adults", value:adults, minimum:1, update:setAdults}, {label:"Children", value:children, minimum:0, update:setChildren}].map(({label,value,minimum,update}) => <div className={s.travellerRow} key={label}>

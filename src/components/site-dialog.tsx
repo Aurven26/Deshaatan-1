@@ -10,7 +10,7 @@ import SearchPopup from "./search-popup";
 import styles from "./site-dialog.module.css";
 import FooterContactForm, {footerFormTypes} from "./footer-contact-form";
 const asset = (name: string, extension = "svg") => `/figma/${name}.${extension}`;
-function Icon({name,className=""}: {name:string;className?:string}) {return <img className={`icon ${className}`} src={asset(name)} alt=""/>;}
+function Icon({name,className=""}: {name:string;className?:string}) {return <img className={`icon ${className}`} src={asset(name)} alt="" loading="lazy" decoding="async"/>;}
 const categories = ["Adventure", "Beach", "Family", "Honeymoon", "Luxury", "Cars", "Solo"];
 export type Modal = { kind: "enquiry" | "airport-transfer" | "car-rental" | "search" | "info" | "guide" | "login"; title: string };
 export function EnquiryFields({prefix, travelDetails = false, inDialog = false, copy}: {prefix: string; travelDetails?: boolean; inDialog?: boolean;copy?:HomePageContent["enquiry"]}) {
@@ -51,10 +51,10 @@ useEffect(()=>{setSubmissionError('');if(modal) dialog.current?.showModal();else
 
 if(modal?.kind === "search") return <SearchPopup onClose={() => setModal(null)} onEnquiry={enquiry} onGuide={title => setModal({kind:"guide",title})} />;
 
-return (    <dialog ref={dialog} className={modal?.kind === "login" ? `modal ${authStyles.dialog}` : "modal"} aria-labelledby={modal?.kind === "login" ? "auth-popup-heading" : headingId} onCancel={event => {if(submitting)event.preventDefault();else setModal(null);}} onClick={e => { if (e.target === e.currentTarget && !submitting) setModal(null); }}><button className={modal?.kind === "login" ? authStyles.close : "modal-close"} aria-label="Close dialog" disabled={submitting} onClick={() => setModal(null)}>{modal?.kind === "login" ? <img src="/figma/auth/login-imgClose.svg" alt="" /> : "×"}</button>{modal?.kind !== "login" && <h2 id={headingId}>{modal?.title}</h2>}
+return (    <dialog ref={dialog} className={modal?.kind === "login" ? `modal ${authStyles.dialog}` : "modal"} aria-labelledby={modal?.kind === "login" ? "auth-popup-heading" : headingId} onCancel={event => {if(submitting)event.preventDefault();else setModal(null);}} onClick={e => { if (e.target === e.currentTarget && !submitting) setModal(null); }}><button className={modal?.kind === "login" ? authStyles.close : "modal-close"} aria-label="Close dialog" disabled={submitting} onClick={() => setModal(null)}>{modal?.kind === "login" ? <img src="/figma/auth/login-imgClose.svg" alt="" loading="lazy" decoding="async" /> : "×"}</button>{modal?.kind !== "login" && <h2 id={headingId}>{modal?.title}</h2>}
       {modal?.kind === "enquiry" && <form onSubmit={submitEnquiry}><p>Tell us a little about your trip. A Deshaatan specialist will get in touch.</p><EnquiryFields prefix="modal-" travelDetails={modal.title === "Plan a custom trip"} inDialog />{submissionError && <p role="alert">{submissionError}</p>}<button className="primary-button" type="submit" disabled={submitting}>{submitting?'Submitting…':'Submit Enquiry'}<Icon name="imgItalicText1" /></button></form>}
       {(modal?.kind === "airport-transfer" || modal?.kind === "car-rental") && <VehicleEnquiryForm key={modal.kind} service={modal.kind} />}
-      {modal?.kind === "guide" && <>{guide?.image && <img className="modal-guide-image" src={guide.image} alt={modal.title} />}<p>{guide?.summary}</p><button className="primary-button" onClick={() => enquiry("A trip to " + modal.title)}>Plan My Trip</button></>}
+      {modal?.kind === "guide" && <>{guide?.image && <img className="modal-guide-image" src={guide.image} alt={modal.title} loading="lazy" decoding="async" />}<p>{guide?.summary}</p><button className="primary-button" onClick={() => enquiry("A trip to " + modal.title)}>Plan My Trip</button></>}
       {modal?.kind === "login" && <AuthPopup />}
       {modal?.kind === "info" && (footerFormTypes[modal.title] ? <FooterContactForm key={modal.title} type={footerFormTypes[modal.title]} /> : <><p>For {modal.title.toLowerCase()}, please contact the Deshaatan team.</p><a className="primary-button" href={`mailto:care@deshaatan.com?subject=${encodeURIComponent(modal.title)}`}>Email Deshaatan</a></>)}
     </dialog>
