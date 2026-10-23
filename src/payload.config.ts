@@ -13,7 +13,7 @@ import {isAdmin,isEditor} from './cms/access';
 import {revalidateGlobal} from './cms/fields';
 import {HomePage} from './cms/home-page';
 import {PageVisibility} from './cms/section-visibility';
-import {allowedOrigins} from './cms/security-origins';
+import {allowedOrigins,getServerURL} from './cms/security-origins';
 
 const base=path.dirname(fileURLToPath(import.meta.url));
 const secret=process.env.PAYLOAD_SECRET;
@@ -21,7 +21,7 @@ const connectionString=process.env.DATABASE_URL;
 if(!secret || secret.length<32)throw new Error('PAYLOAD_SECRET must contain at least 32 characters.');
 if(!connectionString)throw new Error('DATABASE_URL is required.');
 const isNeon=new URL(connectionString).hostname.endsWith('.neon.tech');
-const serverURL=process.env.NEXT_PUBLIC_SERVER_URL || 'http://127.0.0.1:3000';
+const serverURL=getServerURL();
 export default buildConfig({
   secret,serverURL,telemetry:false,maxDepth:3,defaultDepth:1,defaultMaxTextLength:10000,
   admin:{user:'users',meta:{titleSuffix:'— Deshaatan CMS'},importMap:{baseDir:base},livePreview:{collections:['itineraries','pages'],url:({data,collectionConfig})=>typeof data.slug==='string'?`${serverURL}/preview/${collectionConfig?.slug}/${encodeURIComponent(data.slug)}`:serverURL}},

@@ -28,7 +28,10 @@ export function securedRoute(handler: Handler): Handler {
     const auth = /^\/cms-api\/users\/(login|forgot-password|reset-password|first-register|refresh-token)\/?$/.test(pathname);
     const upload = ['POST', 'PATCH', 'PUT'].includes(request.method) && request.headers.get('content-type')?.startsWith('multipart/form-data');
     const rejection = await requestGuard(request, auth ? `auth:${pathname}` : upload ? 'uploads' : 'cms', auth || upload ? 5 : 60, auth ? 900 : 60);
-    if (rejection) return rejection;
+    if (rejection) {
+      if(rejection.status===403)console.warn(JSON.stringify({event:'origin_rejected',route:pathname,method:request.method}));
+      return rejection;
+    }
     // Payload's development fallback prints reset links to stdout. Never trigger it
     // through a public endpoint when a real mail transport has not been configured.
     if (/^\/cms-api\/users\/forgot-password\/?$/.test(pathname) && !process.env.SMTP_HOST) return Response.json({error: 'Password recovery is temporarily unavailable.'}, {status: 503});

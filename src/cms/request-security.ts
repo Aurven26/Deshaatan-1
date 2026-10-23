@@ -20,5 +20,8 @@ export async function requestGuard(request:Request,scope:string,limit=20,windowS
     }
     if(Math.floor(Date.now()/60000)%60===0)await payload.db.drizzle.execute(sql`DELETE FROM request_limits WHERE expires_at<NOW()`);
     return null;
-  }catch{return Response.json({error:'The service is temporarily unavailable. Please try again.'},{status:503});}
+  }catch{
+    console.error(JSON.stringify({event:'request_guard_unavailable',scope}));
+    return Response.json({error:'The service is temporarily unavailable. Please try again.'},{status:503});
+  }
 }
