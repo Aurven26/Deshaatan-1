@@ -40,7 +40,7 @@ function PackageCard({ trip, duration, enquire, share }: { trip: Trip; duration:
   const {homePage:{popular:p}}=useCMSContent();
   return <article className="package-card">
     <div className={`package-image ${trip.crop ? "golden-crop" : ""}`}>
-      {trip.href ? <Link href={trip.href} aria-label={`View ${trip.title}`}><Image className="package-photo" src={trip.image.startsWith("/") ? trip.image : asset(trip.image, "png")} alt={trip.title} width={486} height={486} sizes="(max-width: 600px) 90vw, (max-width: 1000px) 30vw, 336px" quality={75} loading="lazy" /></Link> : <Image className="package-photo" src={trip.image.startsWith("/") ? trip.image : asset(trip.image, "png")} alt={trip.title} width={486} height={486} sizes="(max-width: 600px) 90vw, (max-width: 1000px) 30vw, 336px" quality={75} loading="lazy" />}
+      {trip.href ? <Link href={trip.href} aria-label={`View ${trip.title}`}><Image className="package-photo" src={trip.image.startsWith("/") ? trip.image : asset(trip.image, "png")} alt={trip.title} width={486} height={486} sizes="(max-width: 600px) 90vw, (max-width: 1000px) 30vw, 336px" quality={90} loading="lazy" /></Link> : <Image className="package-photo" src={trip.image.startsWith("/") ? trip.image : asset(trip.image, "png")} alt={trip.title} width={486} height={486} sizes="(max-width: 600px) 90vw, (max-width: 1000px) 30vw, 336px" quality={90} loading="lazy" />}
       <ShareMenu title={trip.title} icon={["imgFrame34", "imgFrame32"].includes(trip.image) ? "imgShare3" : "imgShare2"} onCopy={share} />
       <Icon name={trip.dots} className="photo-dots" />
     </div>
