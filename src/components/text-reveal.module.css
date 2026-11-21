@@ -1,0 +1,9 @@
+.word { display: inline-block; }
+.reveal[data-reveal="waiting"] .word { opacity: 0; }
+.reveal[data-reveal="run"] .word { animation: blurIn .7s cubic-bezier(.22,1,.36,1) calc(var(--i) * var(--stagger)) backwards; }
+@keyframes blurIn {
+  0% { opacity: 0; filter: blur(10px); transform: translateY(-18px); }
+  50% { opacity: .6; filter: blur(4px); transform: translateY(3px); }
+  100% { opacity: 1; filter: blur(0); transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .reveal .word { animation: none !important; opacity: 1 !important; } }
