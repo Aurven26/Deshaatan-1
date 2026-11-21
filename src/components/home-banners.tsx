@@ -41,7 +41,7 @@ export default function HomeBanners() {
         {/* Document navigation opens every banner destination at the page start. */}
         {banner.artworkOnly ? <a className={s.artLink} href={href} aria-label={banner.action} /> : <>
           <div className={s.overlay} />
-          <div className={s.copy}><span className={s.badge}>{banner.badge}</span><h2>{banner.title}</h2><p>{banner.tagline}</p><a className={s.cta} href={href} onPointerMove={event=>{const r=event.currentTarget.getBoundingClientRect();event.currentTarget.style.setProperty("--gx",`${event.clientX-r.left}px`);event.currentTarget.style.setProperty("--gy",`${event.clientY-r.top}px`);}}><span className={s.sheen} aria-hidden="true" /><span className={s.ctaLabel}>{banner.action}</span><img src="/figma/home-banners/arrow-right.svg" alt="" loading="lazy" decoding="async" /></a></div>
+          <div className={s.copy}><span className={s.badge}>{banner.badge}</span><h2>{banner.title}</h2><p>{banner.tagline}</p><a className={s.cta} href={href}><span className={s.sheen} aria-hidden="true" /><span className={s.ctaLabel}>{banner.action}</span><img src="/figma/home-banners/arrow-right.svg" alt="" loading="lazy" decoding="async" /></a></div>
         </>}
       </div>;
     })}

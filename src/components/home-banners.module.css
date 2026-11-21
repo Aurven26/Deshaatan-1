@@ -1,22 +1,20 @@
 .carousel { --panel-width: min(1280px, calc(100vw - 64px)); --panel-height: min(calc(var(--panel-width) * 360 / 1280), max(300px, calc(100svh - 340px))); --gap: 24px; position: relative; height: calc(var(--panel-height) + 72px); padding-top: 32px; overflow: hidden; touch-action: pan-y; }
-.panel { container-type: inline-size; position: absolute; top: 32px; left: 50%; width: var(--panel-width); height: var(--panel-height); transform: translateX(-50%); border-radius: 24px; overflow: hidden; background: #1c2b38; transition: transform .85s cubic-bezier(.65,0,.35,1), opacity .85s cubic-bezier(.65,0,.35,1); will-change: transform; }
-.previous { transform: translateX(calc(-150% - var(--gap))); opacity: .55; }
-.next { transform: translateX(calc(50% + var(--gap))); opacity: .55; }
-.farPrevious { transform: translateX(calc(-250% - var(--gap) * 2)); opacity: 0; pointer-events: none; }
-.farNext { transform: translateX(calc(150% + var(--gap) * 2)); opacity: 0; pointer-events: none; }
+.panel { container-type: inline-size; position: absolute; top: 32px; left: calc((100% - var(--panel-width)) / 2); width: var(--panel-width); height: var(--panel-height); transform: translateX(0); border-radius: 24px; overflow: hidden; background: #1c2b38; transition: transform .85s cubic-bezier(.65,0,.35,1), opacity .85s cubic-bezier(.65,0,.35,1); }
+.previous { transform: translateX(calc(-100% - var(--gap))); opacity: .55; }
+.next { transform: translateX(calc(100% + var(--gap))); opacity: .55; }
+.farPrevious { transform: translateX(calc(-200% - var(--gap) * 2)); opacity: 0; pointer-events: none; }
+.farNext { transform: translateX(calc(200% + var(--gap) * 2)); opacity: 0; pointer-events: none; }
 .photo { position: absolute; width: var(--photo-width, 100%); height: var(--photo-height, 100%); left: var(--photo-left, 0); top: var(--photo-top, 0); max-width: none; object-fit: cover; }
 .overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,18,31,.78), rgba(10,18,31,.35) 45%, rgba(10,18,31,0) 70%); pointer-events: none; }
-.copy { position: absolute; left: clamp(80px, 6.2cqw, 88px); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: flex-start; gap: 10px; max-width: 46%; color: white; font-family: var(--jakarta); }
+.copy { position: absolute; left: clamp(80px, 6.2cqw, 88px); top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 10px; max-width: 46%; color: white; font-family: var(--jakarta); }
 .badge { padding: 5px 12px; border: 1px solid #ffffff4d; border-radius: 99px; background: #ffffff29; font-size: 11px; font-weight: 700; line-height: normal; letter-spacing: .08em; }
 .copy h2 { margin-top: 2px; font-size: clamp(30px, 3.3cqw, 42px); line-height: 1.1; letter-spacing: -.02em; font-weight: 800; }
 .copy p { font-size: clamp(14px, 1.25cqw, 16px); line-height: 1.5; font-weight: 400; color: #ffffffe6; }
 .cta { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; margin-top: 8px; background: #ef6a2e; border-radius: 10px; color: white; font-size: 14px; line-height: normal; font-weight: 700; transition: background .2s; }
-.cta { position: relative; isolation: isolate; overflow: hidden; box-shadow: 0 8px 20px rgba(239,106,46,.35); transition: background .25s, transform .25s, box-shadow .25s; }
+.cta { position: relative; isolation: isolate; overflow: hidden; transition: background .25s, transform .25s; }
 .ctaLabel { position: relative; }
 .cta img { position: relative; flex-shrink: 0; transition: transform .3s cubic-bezier(.22,1,.36,1); }
-.cta::before { content: ""; position: absolute; z-index: -1; left: var(--gx, 50%); top: var(--gy, 50%); width: 140px; height: 140px; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.45), transparent 70%); opacity: 0; transition: opacity .3s; pointer-events: none; }
-.cta:hover { background: #e2581c; transform: translateY(-2px); box-shadow: 0 12px 26px rgba(239,106,46,.45); }
-.cta:hover::before { opacity: 1; }
+.cta:hover { background: #e2581c; transform: translateY(-2px); }
 .cta:hover img, .cta:focus-visible img { transform: translateX(4px); }
 .cta:active { transform: translateY(0); }
 .sheen { position: absolute; z-index: -1; top: 0; bottom: 0; left: -40%; width: 30%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); filter: blur(4px); transform: translateX(0) skewX(-18deg); pointer-events: none; }
