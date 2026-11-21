@@ -38,8 +38,7 @@ export function resolveHomePage(value:unknown):HomePageContent {
   function merge(fallback:unknown,actual:unknown,path=''):unknown {
     if(actual===null || actual===undefined)return fallback;
     if(typeof fallback==='string'){
-      const size=path==='hero.banners.image'?'hero'
-        :['categories.items.image','religious.backgroundImage','religious.featuredImage','testimonials.defaultAvatar','airport.decorationImage','airport.carImage'].includes(path)?'card'
+      const size=['categories.items.image','religious.backgroundImage','religious.featuredImage','testimonials.defaultAvatar','airport.decorationImage','airport.carImage'].includes(path)?'card'
         :undefined;
       return typeof actual==='object'?mediaURL(actual,fallback,size):actual;
     }
