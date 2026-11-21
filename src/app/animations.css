@@ -13,6 +13,23 @@ main, footer { overflow-x: clip; }
 [data-reveal-state="running"] {
   animation: reveal-enter 650ms var(--reveal-ease) var(--reveal-delay, 0ms) backwards;
 }
+[data-reveal="wipe"] { --reveal-from: translate3d(0, 28px, 0); }
+[data-reveal="wipe"][data-reveal-state="running"] { animation-name: reveal-wipe; animation-duration: 900ms; }
+[data-reveal="wipe"][data-reveal-state="running"] img { animation: reveal-zoom 1100ms var(--reveal-ease) var(--reveal-delay, 0ms) backwards; }
+@keyframes reveal-wipe {
+  from { opacity: 0; clip-path: inset(35% 0 0 0); transform: var(--reveal-from); }
+  to { opacity: 1; clip-path: inset(0); transform: none; }
+}
+@keyframes reveal-zoom { from { transform: scale(1.14); } }
+/* Airport card: the car drives in and the plane lands on its path once the card is in view. */
+[data-m="airport"][data-reveal-state] [data-m="car"] { animation: drive-in 1100ms var(--reveal-ease) 150ms backwards; }
+[data-m="airport"][data-reveal-state] [data-m="plane"] { animation: fly-in 1200ms var(--reveal-ease) 250ms backwards; }
+[data-m="airport"][data-reveal-state] [data-m="jet"] { animation: jet-in 1200ms var(--reveal-ease) 350ms backwards; }
+[data-m="airport"][data-reveal-state] [data-m="path"] { animation: path-in 900ms ease 250ms backwards; }
+@keyframes drive-in { from { opacity: 0; transform: translateX(-70px); } }
+@keyframes fly-in { from { opacity: 0; transform: translate(-36px, 24px); } }
+@keyframes jet-in { from { opacity: 0; transform: translate(-48px, 36px) rotate(45deg); } }
+@keyframes path-in { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0); } }
 @keyframes reveal-enter {
   from { opacity: 0; transform: var(--reveal-from); }
   to { opacity: 1; transform: none; }
