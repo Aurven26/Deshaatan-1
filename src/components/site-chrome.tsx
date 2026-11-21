@@ -22,6 +22,7 @@ export function SiteHeader({onAction}: {onAction: (kind: "search" | "login", tit
       {h.promotionVisible && <a className="deal-bar" href={h.promotionURL}><span>{h.promotionTitle} <span className="deal-copy">• &nbsp;{h.promotionText}</span></span><span className="deal-deadline">{h.promotionButton}</span></a>}
       <div className="navbar">
         <a href="/" aria-label={h.logoAlt} className="brand"><img src={h.desktopLogo} alt="" className="desktop-only" loading="lazy" decoding="async" /><img src={h.mobileLogo} alt="" className="mobile-only" loading="lazy" decoding="async" /></a>
+        <a className="mobile-contact" href={h.contactURL}>{h.contactLabel}</a>
         <button className="mobile-toggle" aria-expanded={menuOpen} aria-label="Toggle navigation" onClick={() => setMenuOpen(!menuOpen)}><Icon name="mobile-imgMenusBurgerMenuBig" /></button>
         <nav className={menuOpen ? "nav-content open" : "nav-content"} aria-label="Main navigation"><div className="nav-links">{nav.map(([label, href]) => <a key={label} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}</div><div className="nav-actions">
           {h.showSearch && <button className="search-button" aria-label="Search itineraries and guides" onClick={() => onAction("search", "Where would you like to go?")}><Icon name="imgImage18" /></button>}
