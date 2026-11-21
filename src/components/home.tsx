@@ -6,17 +6,17 @@ import Link from "next/link";
 import { SiteHeader, SiteFooter } from "./site-chrome";
 import {SiteDialog, EnquiryFields, type Modal} from "./site-dialog";
 import {type Trip} from "@/data/travel-catalog";
-import { ShareMenu } from "./share-menu";
 import HomepageMotion from "./homepage-motion";
 import HomeBanners from "./home-banners";
 import {useCMSContent} from './cms-content';
-import DurationTabs, { matchesTripDuration } from "./duration-tabs";
+import { matchesTripDuration } from "./duration-tabs";
+import s from "./home.module.css";
 
 const asset = (name: string, extension = "svg") => `/figma/${name}.${extension}`;
 function Icon({ name, className = "" }: { name: string; className?: string }) {
   return <img className={`icon ${className}`} src={asset(name)} alt="" loading="lazy" decoding="async" />;
 }
-function CarouselArrows({ target, label, count }: { target: RefObject<HTMLDivElement | null>; label: string; count: number }) {
+function CarouselArrows({ target, label, count, className }: { target: RefObject<HTMLDivElement | null>; label: string; count: number; className?: string }) {
   const [edges, setEdges] = useState({start:true,end:false});
   useEffect(() => {
     const element = target.current;
@@ -33,36 +33,43 @@ function CarouselArrows({ target, label, count }: { target: RefObject<HTMLDivEle
     const element = target.current;
     if (element) element.scrollBy({left:direction * element.clientWidth,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
   };
-  return <div className="home-carousel-arrows" aria-label={label + " navigation"}><button type="button" aria-label={"Previous " + label} disabled={edges.start} onClick={() => move(-1)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg></button><button type="button" aria-label={"Next " + label} disabled={edges.end} onClick={() => move(1)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button></div>;
+  return <div className={className ?? s.arrows} aria-label={label + " navigation"}><button type="button" aria-label={"Previous " + label} disabled={edges.start} onClick={() => move(-1)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg></button><button type="button" aria-label={"Next " + label} disabled={edges.end} onClick={() => move(1)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button></div>;
 }
 
-function PackageCard({ trip, duration, enquire, share }: { trip: Trip; duration: number; enquire: (title: string) => void; share: (title: string) => Promise<void> }) {
+function Chips({ labels, value, onChange, label }: { labels: string[]; value: number; onChange: (value: number) => void; label: string }) {
+  return <div className={s.chips} role="group" aria-label={label}>
+    <button type="button" aria-pressed={value === -1} onClick={() => onChange(-1)}>All</button>
+    {labels.map((item, index) => <button type="button" key={item} aria-pressed={value === index} onClick={() => onChange(value === index ? -1 : index)}>{item}</button>)}
+  </div>;
+}
+
+function PackageCard({ trip, enquire }: { trip: Trip; enquire: (title: string) => void }) {
   const {homePage:{popular:p}}=useCMSContent();
-  return <article className="package-card">
-    <div className={`package-image ${trip.crop ? "golden-crop" : ""}`}>
-      {trip.href ? <Link href={trip.href} aria-label={`View ${trip.title}`}><Image className="package-photo" src={trip.image.startsWith("/") ? trip.image : asset(trip.image, "png")} alt={trip.title} width={486} height={486} sizes="(max-width: 600px) 120vw, (max-width: 1000px) 40vw, 440px" quality={90} loading="lazy" /></Link> : <Image className="package-photo" src={trip.image.startsWith("/") ? trip.image : asset(trip.image, "png")} alt={trip.title} width={486} height={486} sizes="(max-width: 600px) 120vw, (max-width: 1000px) 40vw, 440px" quality={90} loading="lazy" />}
-      <ShareMenu title={trip.title} icon={["imgFrame34", "imgFrame32"].includes(trip.image) ? "imgShare3" : "imgShare2"} onCopy={share} />
-      <Icon name={trip.dots} className="photo-dots" />
-    </div>
-    <div className="trip-meta"><span className="rating">{p.rating} <small>{p.ratingScale}</small></span><span>| &nbsp;{trip.days ? `${String(trip.days).padStart(2, "0")} days & ${String(trip.days - 1).padStart(2, "0")} nights` : duration === 1 ? "05 days & 04 nights" : "06 days & 05 nights"}</span></div>
-    {trip.href ? <Link className="trip-title" href={trip.href}>{trip.title}</Link> : <button className="trip-title" onClick={() => enquire(trip.title)}>{trip.title}</button>}
-    <div className="price-row"><div className="price"><del>₹{(trip.previousPrice ?? 12952).toLocaleString("en-IN")}</del><div><strong>₹{(trip.price ?? 8952).toLocaleString("en-IN")}</strong><span>{p.perPerson}</span></div></div><button className="callback" onClick={() => enquire(trip.title)}>{p.callbackLabel}</button></div>
+  const photo = <Image src={trip.image} alt={trip.title} width={604} height={480} sizes="(max-width: 600px) 260px, (max-width: 1000px) 45vw, 302px" quality={90} loading="lazy" />;
+  return <article className={s.card}>
+    {trip.href ? <Link className={s.photo} href={trip.href} aria-label={`View ${trip.title}`}>{photo}{trip.days ? <span className={s.badge}>{trip.days - 1}N / {trip.days}D</span> : null}</Link> : <div className={s.photo}>{photo}</div>}
+    {trip.href ? <Link className={s.title} href={trip.href}>{trip.title}</Link> : <button className={s.title} onClick={() => enquire(trip.title)}>{trip.title}</button>}
+    <div className={s.priceRow}><div className={s.price}><strong>₹{(trip.price ?? 0).toLocaleString("en-IN")}</strong><span>{p.perPerson}</span></div><button type="button" className={s.callback} onClick={() => enquire(trip.title)}>{p.callbackLabel}</button></div>
   </article>;
 }
 
+const whyItems = [
+  {title:"Handpicked itineraries",text:"Every package is planned and checked by our travel team.",icon:<><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></>},
+  {title:"Local travel experts",text:"650+ specialists who know each destination first-hand.",icon:<><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"/><path d="M21 16v2a4 4 0 0 1-4 4h-5"/></>},
+  {title:"Transparent pricing",text:"Clear inclusions and exclusions. No surprises later.",icon:<><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.67 0 6.67-10 0-10"/></>},
+  {title:"100% customisable",text:"Change days, hotels or vehicle to fit your trip.",icon:<><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-9"/><path d="M8 12H3"/><path d="M21 20h-5"/><path d="M12 20H3"/><path d="M14 2v4"/><path d="M8 10v4"/><path d="M16 18v4"/></>},
+];
+const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0,2).map(part => part[0]).join("").toUpperCase();
+
 export default function Home() {
   const {tourPackages,testimonials:allTestimonials,guideDetails,homePage:h,homeSelection}=useCMSContent();
-  const categories=h.categories.items;
-  const showCategories=h.categories.enabled;
   const testimonials=h.testimonials.useAll?allTestimonials:homeSelection.testimonials.flatMap(name=>allTestimonials.filter(item=>item.name===name));
   const guides=h.guides.useAll?guideDetails:homeSelection.guides.flatMap(name=>guideDetails.filter(item=>item.title===name));
   const popularTrips=h.popular.useAll?tourPackages:homeSelection.popular.flatMap(id=>tourPackages.filter(item=>item.id===id));
   const [duration, setDuration] = useState(-1);
   const [religiousDuration, setReligiousDuration] = useState(-1);
-  const destinationTrack = useRef<HTMLDivElement>(null);
-  const guideTrack = useRef<HTMLDivElement>(null);
+  const popularTrack = useRef<HTMLDivElement>(null);
   const religiousTrack = useRef<HTMLDivElement>(null);
-  const [category, setCategory] = useState("");
   const [modal, setModal] = useState<Modal | null>(null);
   const [notice, setNotice] = useState("");
   const [submittingItinerary, setSubmittingItinerary] = useState(false);
@@ -74,15 +81,9 @@ export default function Home() {
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(""), 5000); return () => clearTimeout(timer); }, [notice]);
   useEffect(() => {
     if (!testimonials.length || testimonialPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setTestimonial(value => (value + 1) % testimonials.length), 7000);
+    const timer = window.setInterval(() => setTestimonial(value => (value + 1) % testimonials.length), h.testimonials.interval * 1000);
     return () => window.clearInterval(timer);
   }, [testimonialPaused,testimonials.length,h.testimonials.interval]);
-  async function share(title: string) {
-    try {
-      await navigator.clipboard.writeText(`${title} — ${window.location.origin}/#destinations`);
-      setNotice("Package link copied.");
-    } catch { setNotice("You can share this page using the address in your browser."); }
-  }
   async function submitEnquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submittingItinerary) return;
@@ -100,39 +101,47 @@ export default function Home() {
       setItineraryResult({success:false, message:error instanceof Error ? error.message : "We couldn’t submit your request. Please try again."});
     } finally { setSubmittingItinerary(false); }
   }
-  const visibleTrips: Trip[] = popularTrips
-    .filter(trip => matchesTripDuration(trip.days, duration)
-      && (!category || !["Adventure", "Beach", "Honeymoon"].includes(category) || trip.types.includes(category)))
-    .map(trip => ({...trip, image: trip.image.startsWith('/') || trip.image.startsWith('http') ? trip.image : `/figma/packages/${trip.image}`, dots: "imgGroup598", category: trip.types[0]}));
-  const charDham = tourPackages.find(trip => trip.id === h.religious.featuredSlug);
-  const showCharDham = !!charDham && (h.religious.useAll || homeSelection.religious.includes(charDham.id)) && matchesTripDuration(charDham.days, religiousDuration);
-  const religious:Trip[]=(h.religious.useAll?tourPackages.filter(trip=>trip.types.includes('Pilgrimage') || trip.id==='golden-triangle'):homeSelection.religious.flatMap(id=>tourPackages.filter(trip=>trip.id===id))).filter(trip=>trip.id!==h.religious.featuredSlug).map(trip=>({...trip,image:trip.image.startsWith('/')?trip.image:`/figma/packages/${trip.image}`,dots:'imgGroup599',category:trip.types[0]}));
+  const toTrip = (trip: (typeof tourPackages)[number]): Trip => ({...trip, image: trip.image.startsWith('/') || trip.image.startsWith('http') ? trip.image : `/figma/packages/${trip.image}`, dots: "", category: trip.types[0]});
+  const visibleTrips = popularTrips.filter(trip => matchesTripDuration(trip.days, duration)).map(toTrip);
+  const religious = (h.religious.useAll ? tourPackages.filter(trip => trip.types.includes('Pilgrimage')) : homeSelection.religious.flatMap(id => tourPackages.filter(trip => trip.id === id))).map(toTrip);
   const visibleReligiousTrips = religious.filter(trip => matchesTripDuration(trip.days, religiousDuration));
-  const religiousCount = visibleReligiousTrips.length + Number(showCharDham);
+  const current = testimonials.length ? testimonials[testimonial % testimonials.length] : null;
+  const searches = h.about.linkGroups.flatMap(group => group.links);
+  const searchTitle = h.about.linkGroups[0]?.title || "Popular searches";
+  const arrow = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>;
   return <>
     <HomepageMotion />
     <a className="skip-link" href="#main">Skip to content</a>
     <SiteHeader home onAction={(kind, title) => setModal({kind, title})} />
-    <main id="main">
+    <main id="main" className={s.wrap}>
       <HomeBanners />
-      {showCategories && <div className="categories-wrap"><div className="categories content">{categories.map((item, i) => <button key={item.label} className={category === item.label ? "category active" : "category"} aria-pressed={category === item.label} onClick={() => { setCategory(category === item.label ? "" : item.label); if (!["Adventure", "Beach", "Honeymoon"].includes(item.label)) enquiry(item.enquiryTitle); }}><span className={`category-icon category-${i}`}><img src={item.image} alt="" />{i === 3 && <Icon name="imgIcon1" className="heart-detail" />}</span><span>{item.label}</span></button>)}</div><Icon name="imgVector11" className="category-divider" /></div>}
-      {h.popular.enabled && <section id="destinations" className="popular content">
-        <div className="section-heading"><h1>{h.popular.title}</h1><DurationTabs labels={h.popular.durationLabels.map(item=>item.label)} value={duration} onChange={setDuration} /><CarouselArrows target={destinationTrack} label="destinations" count={visibleTrips.length} /></div>
-        <div className="packages-grid home-carousel-track" ref={destinationTrack} aria-live="polite">{visibleTrips.map(trip => <PackageCard key={trip.title} trip={trip} duration={duration} enquire={enquiry} share={share} />)}</div>
-        {!visibleTrips.length && <p role="status">{h.popular.emptyText} <button className="view-all" onClick={() => setCategory("")}>{h.popular.clearLabel}</button></p>}
-      </section>}
-      {h.guides.enabled && <section id="guides" className="guides content"><div className="section-heading"><h2>{h.guides.title}</h2><CarouselArrows target={guideTrack} label="guides" count={guides.length} /></div>
-        <div className="guides-grid home-carousel-track" ref={guideTrack}>{guides.map(guide => <button className="guide-card" key={guide.title} onClick={() => setModal({ kind: "guide", title: guide.title })}><span className="guide-image"><Image src={guide.image||"/figma/imgImageMunnar.png"} alt={`${guide.title} travel guide`} width={640} height={342} sizes="(max-width: 600px) 88vw, (max-width: 1000px) 30vw, 318px" quality={75} loading="lazy" /></span><div className="guide-copy"><h3>{guide.title}</h3><p>{guide.summary}</p><span>{h.guides.exploreLabel} {guide.title} <b>→</b></span></div></button>)}</div>
-      </section>}
-      {h.religious.enabled && <section id="religious" className="religious"><div className="religious-backdrop" style={{backgroundImage:`url("${h.religious.backgroundImage}")`}} /><div className="content religious-content"><div className="section-heading"><h2>{h.religious.title}</h2><DurationTabs labels={h.religious.durationLabels.map(item=>item.label)} value={religiousDuration} onChange={setReligiousDuration} /><CarouselArrows target={religiousTrack} label="religious packages" count={religiousCount} /></div>
-        <div className="packages-grid home-carousel-track" ref={religiousTrack} aria-live="polite">{showCharDham && <article className="featured-trip"><Image className="featured-photo" src={h.religious.featuredImage} alt="Kedarnath temple in the Himalayas" width={640} height={980} sizes="(max-width: 600px) 88vw, (max-width: 1000px) 30vw, 336px" quality={75} loading="lazy" /><ShareMenu title={h.religious.featuredEnquiry} icon="imgShare4" onCopy={share} /><button className="featured-copy" onClick={() => enquiry(h.religious.featuredEnquiry)}><strong>{h.religious.featuredTitle}</strong><span>{h.religious.featuredSubtitle}</span><small>{charDham?.days} days - {(charDham?.days ?? 1) - 1} Nights</small></button><button className="featured-callback" onClick={() => enquiry(h.religious.featuredEnquiry)}>{h.religious.featuredButton}</button></article>}{visibleReligiousTrips.map(trip => <PackageCard key={trip.title} trip={trip} duration={religiousDuration} enquire={enquiry} share={share} />)}</div>
-        {!religiousCount && <p role="status">{h.religious.emptyText} <button type="button" onClick={() => setReligiousDuration(-1)}>{h.religious.clearLabel}</button></p>}
+      {h.popular.enabled && <section id="destinations" className={s.section}><div className={s.container}>
+        <div className={s.head}><div><h1>{h.popular.title}</h1><p>Our most-loved itineraries, planned end to end by local experts.</p></div><div className={s.tools}><Chips label="Trip duration" labels={h.popular.durationLabels.map(item=>item.label)} value={duration} onChange={setDuration} /><CarouselArrows target={popularTrack} label="packages" count={visibleTrips.length} /></div></div>
+        <div className={s.trackBleed}><div className={s.track} ref={popularTrack} aria-live="polite">{visibleTrips.map(trip => <PackageCard key={trip.title} trip={trip} enquire={enquiry} />)}</div></div>
+        {!visibleTrips.length && <p className={s.empty} role="status">{h.popular.emptyText} <button type="button" onClick={() => setDuration(-1)}>Show all</button></p>}
       </div></section>}
-      {h.testimonials.enabled && testimonials.length>0 && <section className="testimonials content" onMouseEnter={() => setTestimonialPaused(true)} onMouseLeave={() => setTestimonialPaused(false)} onFocusCapture={() => setTestimonialPaused(true)} onBlurCapture={() => setTestimonialPaused(false)}><div className="testimonial-heading"><p>{h.testimonials.eyebrow}</p><h2><span className="desktop-only">{h.testimonials.title.split("\n").map((line,i)=><span key={i}>{i>0&&<br/>}{line}</span>)}</span><span className="mobile-only">{h.testimonials.mobileTitle}</span></h2></div><div className="testimonial-card" aria-live="polite"><Image className="avatar" src={testimonials[testimonial % testimonials.length].avatar||h.testimonials.defaultAvatar} alt="" width={64} height={64} sizes="64px" quality={75} loading="lazy" /><div className="testimonial-story" key={testimonial}><p>{testimonials[testimonial % testimonials.length].text}</p>{testimonials[testimonial % testimonials.length].rating>=4.5 ? <Icon name="imgStar" className="stars" /> : <span className="stars" style={{color:"#ffbe45",fontSize:20,width:"auto",height:"auto",lineHeight:1}} aria-label={`${testimonials[testimonial % testimonials.length].rating} out of 5 stars`}>{"★".repeat(Math.round(testimonials[testimonial % testimonials.length].rating))}</span>}<strong>{testimonials[testimonial % testimonials.length].name}</strong><small>{testimonials[testimonial % testimonials.length].role}</small></div><div className="testimonial-controls"><button aria-label="Previous testimonial" onClick={() => setTestimonial(value => (value + testimonials.length - 1) % testimonials.length)}><Icon name="imgArrowBtn8" className="flip-arrow" /></button><button aria-label="Next testimonial" onClick={() => setTestimonial(value => (value + 1) % testimonials.length)}><Icon name="imgArrowBtn2" /></button></div></div></section>}
+      {h.guides.enabled && guides.length>0 && <section id="guides" className={`${s.section} ${s.cream}`}><div className={s.container}>
+        <div className={s.head}><div><h2>{h.guides.title}</h2><p>Pick a region and we’ll match you with the right itinerary.</p></div><Link className={`${s.link} ${s.desktopLink}`} href="/tour-packages">View all destinations →</Link></div>
+        <div className={s.tiles}>{guides.slice(0,4).map(guide => <Link className={s.tile} key={guide.title} href={`/tour-packages?destination=${encodeURIComponent(guide.title)}`}><Image src={guide.image||"/figma/imgImageMunnar.png"} alt={`${guide.title} tour packages`} width={604} height={760} sizes="(max-width: 600px) 45vw, (max-width: 1000px) 45vw, 302px" quality={85} loading="lazy" /><span className={s.tileCopy}><strong>{guide.title}</strong><span>{h.guides.exploreLabel} tours →</span></span></Link>)}</div>
+        <Link className={`${s.link} ${s.mobileLink}`} href="/tour-packages">View all destinations →</Link>
+      </div></section>}
+      {h.religious.enabled && religious.length>0 && <section id="religious" className={`${s.section} ${s.dark}`}><div className={s.container}>
+        <div className={s.head}><div><h2>{h.religious.title}</h2><p>Comfortable, well-paced yatras with stays and transfers taken care of.</p></div><div className={s.tools}><Chips label="Pilgrimage duration" labels={h.religious.durationLabels.map(item=>item.label)} value={religiousDuration} onChange={setReligiousDuration} /><CarouselArrows target={religiousTrack} label="pilgrimage packages" count={visibleReligiousTrips.length} /></div></div>
+        <div className={s.trackBleed}><div className={s.track} ref={religiousTrack} aria-live="polite">{visibleReligiousTrips.map(trip => <PackageCard key={trip.title} trip={trip} enquire={enquiry} />)}</div></div>
+        {!visibleReligiousTrips.length && <p className={s.empty} role="status">{h.religious.emptyText} <button type="button" onClick={() => setReligiousDuration(-1)}>{h.religious.clearLabel}</button></p>}
+      </div></section>}
+      <section className={`${s.container} ${s.why}`} aria-label="Why Deshaatan">{whyItems.map(item => <div className={s.whyCard} key={item.title}><span className={s.whyIcon}><svg viewBox="0 0 24 24" aria-hidden="true">{item.icon}</svg></span><h3>{item.title}</h3><p>{item.text}</p></div>)}</section>
+      {h.testimonials.enabled && current && <section className={`${s.section} ${s.cream}`} onMouseEnter={() => setTestimonialPaused(true)} onMouseLeave={() => setTestimonialPaused(false)} onFocusCapture={() => setTestimonialPaused(true)} onBlurCapture={() => setTestimonialPaused(false)}><div className={`${s.container} ${s.reviews}`}>
+        <div><p className={s.eyebrow}>{h.testimonials.eyebrow}</p><h2>{h.testimonials.mobileTitle}</h2></div>
+        <div className={s.review} aria-live="polite"><span className={s.stars} aria-label={`${current.rating} out of 5 stars`}>{"★".repeat(Math.max(1,Math.round(current.rating)))}</span><p className={s.quote} key={testimonial}>“{current.text}”</p>
+          <div className={s.reviewFoot}><div className={s.person}><span className={s.avatar}>{current.avatar ? <img src={current.avatar} alt="" loading="lazy" /> : initials(current.name)}</span><div><strong>{current.name}</strong><small>{current.role}</small></div></div>
+          {testimonials.length>1 && <div className={`${s.arrows} ${s.reviewArrows}`}><button type="button" aria-label="Previous testimonial" onClick={() => setTestimonial(value => (value + testimonials.length - 1) % testimonials.length)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg></button><button type="button" aria-label="Next testimonial" onClick={() => setTestimonial(value => (value + 1) % testimonials.length)}>{arrow}</button></div>}</div></div>
+      </div></section>}
       {h.enquiry.enabled && <section id="itinerary" className="itinerary"><div className="content"><h2>{h.enquiry.titleBefore} <span>{h.enquiry.titleHighlight}</span> {h.enquiry.titleAfter}</h2><p>{h.enquiry.description}</p><form className="itinerary-form" onSubmit={submitEnquiry} aria-busy={submittingItinerary}><fieldset className="itinerary-fieldset" disabled={submittingItinerary}><EnquiryFields prefix="itinerary-" travelDetails copy={h.enquiry} /></fieldset><div className="form-actions"><button type="submit" className="primary-button" disabled={submittingItinerary}>{submittingItinerary ? h.enquiry.pendingLabel : h.enquiry.button}<Icon name="imgItalicText1" /></button><a className="whatsapp-button" href={h.enquiry.whatsappURL} target="_blank" rel="noreferrer"><Icon name="imgGroup1" />{h.enquiry.whatsappLabel}</a></div>{itineraryResult && <p className={`itinerary-result ${itineraryResult.success ? "success" : "error"}`} role={itineraryResult.success ? "status" : "alert"}>{itineraryResult.message}</p>}<div className="form-promises">{h.enquiry.promises.map((item,i)=><span key={i}>{item.label}</span>)}</div></form></div></section>}
-      {h.about.enabled && <><section id="about" className="about content"><h2>{h.about.title}</h2><div className={expanded ? "about-copy expanded" : "about-copy"}><p>{expanded ? h.about.full : h.about.preview} <button className="about-toggle" onClick={() => setExpanded(!expanded)}>{expanded ? h.about.readLess : h.about.readMore}</button></p></div>{h.about.linkGroups.map((group,i) => <div className="city-links" key={i}><h2>{group.title}</h2><Icon name="imgVector16" /><div className="city-columns">{[0,1,2].map(column => <div key={column}>{group.links.filter((_,index)=>index%3===column).map((link,j)=>link.href?<a key={j} href={link.href}>{link.label}</a>:<button key={j} onClick={()=>enquiry(link.label)}>{link.label}</button>)}</div>)}</div></div>)}</section>
-      <div className="mobile-city-links mobile-only">{h.about.linkGroups.map((group,i)=><details key={i}><summary>{group.title}</summary><div>{group.links.map((link,j)=>link.href?<a key={j} href={link.href}>{link.label}</a>:<button key={j} onClick={()=>enquiry(link.label)}>{link.label}</button>)}</div></details>)}</div></>}
-      {h.airport.enabled && <section className="airport-transfer content" aria-label="Airport transfers"><Image className="airport-decoration" src={h.airport.decorationImage} alt="" width={107} height={81} sizes="107px" quality={75} loading="lazy" /><Image className="airport-car" src={h.airport.carImage} alt={h.airport.carAlt} width={279} height={139} sizes="279px" quality={75} loading="lazy" /><div><h2>{h.airport.title}</h2><p>{h.airport.description}</p></div><button onClick={() => setModal({kind:"airport-transfer",title:h.airport.enquiryTitle})}>{h.airport.button}</button></section>}
+      {h.airport.enabled && <div className={`${s.container} ${s.airportWrap}`}><section className={s.airport} aria-label="Airport transfers"><div className={s.airportArt}><Image className={s.airportPlane} src={h.airport.decorationImage} alt="" width={107} height={81} sizes="107px" quality={75} loading="lazy" /><Image className={s.airportCar} src={h.airport.carImage} alt={h.airport.carAlt} width={279} height={139} sizes="(max-width: 600px) 150px, 230px" quality={80} loading="lazy" /></div><div className={s.airportText}><span className={s.airportLabel}>AIRPORT TRANSFERS</span><h2>{h.airport.title}</h2><p>{h.airport.description}</p></div><button type="button" className={s.airportButton} onClick={() => setModal({kind:"airport-transfer",title:h.airport.enquiryTitle})}>{h.airport.button}{arrow}</button></section></div>}
+      {h.about.enabled && <section id="about" className={`${s.container} ${s.about}`}><h2>{h.about.title}</h2><p>{expanded ? h.about.full : h.about.preview}</p><button type="button" className={s.aboutToggle} onClick={() => setExpanded(!expanded)}>{expanded ? h.about.readLess : `${h.about.readMore} →`}</button>
+        {searches.length>0 && <div className={s.searches}><h2>{searchTitle}</h2><div className={s.searchList}>{searches.map((link,i)=>link.href?<a key={i} href={link.href}>{link.label}<b aria-hidden="true">↗</b></a>:<button type="button" key={i} onClick={()=>enquiry(link.label)}>{link.label}<b aria-hidden="true">↗</b></button>)}</div></div>}
+      </section>}
     </main>
     <SiteFooter onInfo={title => setModal({kind: "info", title})} onRentCar={() => setModal({kind:"car-rental",title:"Rent A Car"})} />
     <SiteDialog modal={modal} setModal={setModal} onNotice={setNotice} />
