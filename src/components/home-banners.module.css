@@ -1,5 +1,5 @@
 .carousel { --panel-width: min(1280px, calc(100vw - 64px)); --panel-height: min(calc(var(--panel-width) * 360 / 1280), max(300px, calc(100svh - 340px))); --gap: 24px; position: relative; height: calc(var(--panel-height) + 72px); padding-top: 32px; overflow: hidden; touch-action: pan-y; }
-.panel { container-type: inline-size; position: absolute; top: 32px; left: calc((100% - var(--panel-width)) / 2); width: var(--panel-width); height: var(--panel-height); transform: translateX(0); border-radius: 24px; overflow: hidden; background: #1c2b38; transition: transform .85s cubic-bezier(.65,0,.35,1), opacity .85s cubic-bezier(.65,0,.35,1); }
+.panel { container-type: inline-size; position: absolute; top: 32px; left: calc((100% - var(--panel-width)) / 2); left: round(down, calc((100% - var(--panel-width)) / 2), 1px); width: var(--panel-width); height: var(--panel-height); transform: translateX(0); border-radius: 24px; overflow: hidden; background: #1c2b38; transition: transform .85s cubic-bezier(.65,0,.35,1), opacity .85s cubic-bezier(.65,0,.35,1); }
 .previous { transform: translateX(calc(-100% - var(--gap))); opacity: .55; }
 .next { transform: translateX(calc(100% + var(--gap))); opacity: .55; }
 .farPrevious { transform: translateX(calc(-200% - var(--gap) * 2)); opacity: 0; pointer-events: none; }
