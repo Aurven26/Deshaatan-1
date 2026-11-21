@@ -41,23 +41,25 @@ footer{background:#f1f2f3;color:#9a9ea6}.footer-main{max-width:1378px;margin:aut
 .modal > h2{margin-bottom:8px}
 
 /* Homepage redesign v1: align header and footer to the 1280px content grid, solid Contact button */
-@media(min-width:1251px){body:has(main.home-v2) .deal-bar,body:has(main.home-v2) .navbar,body:has(main.home-v2) .footer-bottom{padding-inline:max(32px,calc((100% - 1280px)/2))}body:has(main.home-v2) .footer-main{width:min(1280px,calc(100% - 64px));max-width:none;margin-inline:auto}}
-body:has(main.home-v2) .contact-button{background:#ef6a2e;color:#fff}body:has(main.home-v2) .contact-button:hover{background:#c4501c}
+@media(min-width:1251px){header .deal-bar,header .navbar,body:has(main.home-v2) .footer-bottom{padding-inline:max(32px,calc((100% - 1280px)/2))}body:has(main.home-v2) .footer-main{width:min(1280px,calc(100% - 64px));max-width:none;margin-inline:auto}}
+header .contact-button{background:#ef6a2e;color:#fff}header .contact-button:hover{background:#c4501c}
 /* Homepage redesign v2: solid header, enquiry on the 1280px grid, mobile header as designed */
-.mobile-contact{display:none}
-body:has(main.home-v2) header::before{background:#fff;backdrop-filter:none;box-shadow:0 6px 20px #10213a0f}
-body:has(main.home-v2) .navbar{background:#fff;border-bottom:1px solid #eef0f4}
+header .mobile-contact{display:none}
+header::before{background:#fff;backdrop-filter:none;box-shadow:0 6px 20px #10213a0f}
+header .navbar{background:#fff;border-bottom:1px solid #eef0f4}
 @media(min-width:1001px){body:has(main.home-v2) .itinerary>.content{width:min(1280px,calc(100% - 64px));left:0;margin-inline:auto}}
 @media(max-width:600px){
-body:has(main.home-v2) .deal-bar{display:flex;height:30px;padding:0 16px;gap:0;justify-content:center;flex-wrap:nowrap;font-family:var(--jakarta);font-size:11px;font-weight:500;color:#10213a;background:#fdecec;overflow:hidden}
-body:has(main.home-v2) .deal-bar>span:first-child{overflow:hidden;text-overflow:ellipsis}
-body:has(main.home-v2) .deal-bar .deal-copy{color:#d93025;font-weight:600}
-body:has(main.home-v2) .deal-deadline{display:none}
-body:has(main.home-v2) .navbar{height:62px;padding:0 16px}
-body:has(main.home-v2) .brand{height:37px}
-body:has(main.home-v2) .brand img{height:37px;width:auto}
-body:has(main.home-v2) .mobile-contact{display:inline-flex;align-items:center;height:32px;margin-left:auto;margin-right:10px;padding:0 14px;border-radius:999px;background:#ef6a2e;color:#fff;font-size:13px;font-weight:600}
-body:has(main.home-v2) .mobile-toggle{width:24px;height:24px;display:grid;place-items:center}
-body:has(main.home-v2) .mobile-toggle>img{width:24px;height:24px}
-body:has(main.home-v2) .nav-content{top:100px}
+header .deal-bar{display:flex;height:30px;padding:0 16px;gap:0;justify-content:center;flex-wrap:nowrap;font-family:var(--jakarta);font-size:11px;font-weight:500;color:#10213a;background:#fdecec;overflow:hidden}
+header .deal-bar>span:first-child{overflow:hidden;text-overflow:ellipsis}
+header .deal-bar .deal-copy{color:#d93025;font-weight:600}
+header .deal-deadline{display:none}
+header .navbar{height:62px;padding:0 16px}
+header .brand{height:37px}
+header .brand img{height:37px;width:auto}
+header .mobile-contact{display:inline-flex;align-items:center;height:32px;margin-left:auto;margin-right:10px;padding:0 14px;border-radius:999px;background:#ef6a2e;color:#fff;font-size:13px;font-weight:600}
+header .mobile-toggle{width:24px;height:24px;display:grid;place-items:center}
+header .mobile-toggle>img{width:24px;height:24px}
+header .nav-content{top:100px}
 }
+header .nav-links{margin-right:4px}
+@media(max-width:600px){header .nav-content .contact-button{display:none}header .nav-content{top:100px;left:16px;right:16px}}
