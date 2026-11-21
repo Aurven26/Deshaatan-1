@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export type RevealVariant = "fade-up" | "fade-in" | "slide-left" | "slide-right" | "zoom-in";
+export type RevealVariant = "fade-up" | "fade-in" | "slide-left" | "slide-right" | "zoom-in" | "wipe";
 export type RevealTarget = {
   selector: string;
   variant?: RevealVariant;
@@ -41,7 +41,7 @@ export function useReveal(targets: readonly RevealTarget[]) {
         }
         element.dataset.revealState = "running";
         const delay = Number.parseFloat(element.style.getPropertyValue("--reveal-delay")) || 0;
-        timers.set(element, setTimeout(() => complete(element), 700 + delay));
+        timers.set(element, setTimeout(() => complete(element), (element.dataset.reveal === "wipe" ? 950 : 700) + delay));
       }
     }, { threshold: 0.15 });
 
@@ -80,7 +80,7 @@ export function useReveal(targets: readonly RevealTarget[]) {
     register();
     // Handles filtered/reinserted package cards, without resetting other reveals.
     const mutations = new MutationObserver(register);
-    document.querySelectorAll(".packages-grid").forEach(grid => mutations.observe(grid, { childList: true }));
+    document.querySelectorAll('.packages-grid, [data-m="track"], [data-m="track-alt"]').forEach(grid => mutations.observe(grid, { childList: true }));
     reducedMotion.addEventListener("change", stopMotion);
     document.addEventListener("focusin", onFocus);
     return () => {

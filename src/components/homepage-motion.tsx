@@ -14,6 +14,18 @@ const reveals: readonly RevealTarget[] = [
   { selector: ".itinerary > .content" },
   { selector: ".about > h2, .about-copy", variant: "slide-left" },
   { selector: ".city-links", variant: "slide-right", stagger: 90 },
+  // Homepage v2: each section enters a little differently so the page reads as a sequence.
+  { selector: '[data-m="head"]' },
+  { selector: '[data-m="track"] > *', stagger: 80 },
+  { selector: '[data-m="tiles"] > *', variant: "wipe", stagger: 110 },
+  { selector: '[data-m="track-alt"] > *', variant: "slide-right", stagger: 80 },
+  { selector: '[data-m="why"] > *', variant: "zoom-in", stagger: 90 },
+  { selector: '[data-m="rv-head"]', variant: "slide-left" },
+  { selector: '[data-m="rv-card"]', variant: "slide-right" },
+  { selector: '[data-m="airport"]' },
+  { selector: '[data-m="about"]', stagger: 80 },
+  { selector: '[data-m="chips"] > *', variant: "fade-in", stagger: 35 },
+  { selector: ".site-footer .footer-main > *", stagger: 80 },
 ];
 
 export default function HomepageMotion() {
@@ -21,11 +33,19 @@ export default function HomepageMotion() {
   const progress = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let frame = 0;
+    const hero = document.querySelector<HTMLElement>('[aria-roledescription="carousel"]');
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () => {
       frame = 0;
       const total = document.documentElement.scrollHeight - window.innerHeight;
       const amount = total > 0 ? Math.min(1, Math.max(0, window.scrollY / total)) : 0;
       progress.current?.style.setProperty("--scroll-progress", String(amount));
+      // Hero depth: the photo drifts and grows while the copy lifts away as the banner leaves.
+      if (hero && !still.matches) {
+        const rect = hero.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height)));
+        hero.style.setProperty("--hero-p", p.toFixed(3));
+      }
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();

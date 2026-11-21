@@ -41,7 +41,7 @@ export default function HomeBanners() {
         {/* Document navigation opens every banner destination at the page start. */}
         {banner.artworkOnly ? <a className={s.artLink} href={href} aria-label={banner.action} /> : <>
           <div className={s.overlay} />
-          <div className={s.copy}><span className={s.badge}>{banner.badge}</span><h2>{banner.title}</h2><p>{banner.tagline}</p><a className={s.cta} href={href}>{banner.action}<img src="/figma/home-banners/arrow-right.svg" alt="" loading="lazy" decoding="async" /></a></div>
+          <div className={s.copy} key={banner.key||position}><span className={s.badge}>{banner.badge}</span><h2>{banner.title}</h2><p>{banner.tagline}</p><a className={s.cta} href={href}>{banner.action}<img src="/figma/home-banners/arrow-right.svg" alt="" loading="lazy" decoding="async" /></a></div>
         </>}
       </div>;
     })}
