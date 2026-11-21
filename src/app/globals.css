@@ -39,3 +39,7 @@ footer{background:#f1f2f3;color:#9a9ea6}.footer-main{max-width:1378px;margin:aut
 #main > #guides{display:none}
 /* Shared popup headings sit close to their introductory copy. */
 .modal > h2{margin-bottom:8px}
+
+/* Homepage redesign v1: align header and footer to the 1280px content grid, solid Contact button */
+@media(min-width:1251px){body:has(main.home-v2) .deal-bar,body:has(main.home-v2) .navbar,body:has(main.home-v2) .footer-bottom{padding-inline:max(32px,calc((100% - 1280px)/2))}body:has(main.home-v2) .footer-main{width:min(1280px,calc(100% - 64px));max-width:none;margin-inline:auto}}
+body:has(main.home-v2) .contact-button{background:#ef6a2e;color:#fff}body:has(main.home-v2) .contact-button:hover{background:#c4501c}
