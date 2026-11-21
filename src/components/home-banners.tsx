@@ -10,7 +10,7 @@ export default function HomeBanners() {
   const {homePage:{hero}}=useCMSContent();
   const banners=hero.banners.filter(banner=>banner.visible);
   const [index,setIndex] = useState(0);
-  const [playing,setPlaying] = useState(hero.autoplay);
+  const playing = hero.autoplay;
   const [hovered,setHovered] = useState(false);
   const [focused,setFocused] = useState(false);
   const touch = useRef<number|null>(null);
@@ -45,11 +45,10 @@ export default function HomeBanners() {
         </>}
       </div>;
     })}
-    <div className={s.controls}>
-      <button aria-label="Previous banner" onClick={()=>advance(-1)}>‹</button>
-      <button aria-label={playing?"Pause slideshow":"Play slideshow"} aria-pressed={playing} onClick={()=>setPlaying(value=>!value)}>{playing?"Ⅱ":"▷"}</button>
-      <span aria-live={playing?"off":"polite"}>{(index%banners.length)+1} / {banners.length}</span>
-      <button aria-label="Next banner" onClick={()=>advance(1)}>›</button>
-    </div>
+    {banners.length>1 && <>
+      <button type="button" className={`${s.arrow} ${s.arrowLeft}`} aria-label="Previous banner" onClick={()=>advance(-1)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg></button>
+      <button type="button" className={`${s.arrow} ${s.arrowRight}`} aria-label="Next banner" onClick={()=>advance(1)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button>
+      <div className={s.dots}>{banners.map((banner,i)=><button type="button" key={banner.key||i} aria-label={`Show banner ${i+1}: ${banner.title}`} aria-current={i===index%banners.length} onClick={()=>setIndex(i)} />)}</div>
+    </>}
   </section>;
 }
