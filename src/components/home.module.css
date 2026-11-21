@@ -128,6 +128,9 @@
 /* Micro-interactions: things respond to the pointer, never more than a few pixels */
 .card { transition: transform .35s cubic-bezier(.22,1,.36,1); }
 .card:hover { transform: translateY(-4px); }
+/* The track scrolls sideways, which also clips vertically: give lifted cards and their shadow room */
+.track { padding-block: 8px 28px; margin-block: -8px -28px; }
+.photo, .tile { isolation: isolate; -webkit-mask-image: -webkit-radial-gradient(white, black); }
 .photo { transition: box-shadow .35s ease; }
 .card:hover .photo { box-shadow: 0 14px 30px rgba(16,33,58,.16); }
 .photo img { transition: transform .7s cubic-bezier(.22,1,.36,1); }
