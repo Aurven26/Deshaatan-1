@@ -59,6 +59,7 @@ const whyItems = [
   {title:"Transparent pricing",text:"Clear inclusions and exclusions. No surprises later.",icon:<><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.67 0 6.67-10 0-10"/></>},
   {title:"100% customisable",text:"Change days, hotels or vehicle to fit your trip.",icon:<><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-9"/><path d="M8 12H3"/><path d="M21 20h-5"/><path d="M12 20H3"/><path d="M14 2v4"/><path d="M8 10v4"/><path d="M16 18v4"/></>},
 ];
+const tileNotes: Record<string,string> = {Kerala:"Backwaters & hills",Rajasthan:"Forts & palaces",Kashmir:"Lakes & valleys",Himachal:"Mountain towns",Goa:"Beaches & sunsets",Ladakh:"High passes & lakes",Uttarakhand:"Temples & treks"};
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0,2).map(part => part[0]).join("").toUpperCase();
 
 export default function Home() {
@@ -113,7 +114,7 @@ export default function Home() {
     <HomepageMotion />
     <a className="skip-link" href="#main">Skip to content</a>
     <SiteHeader home onAction={(kind, title) => setModal({kind, title})} />
-    <main id="main" className={s.wrap}>
+    <main id="main" className={`${s.wrap} home-v2`}>
       <HomeBanners />
       {h.popular.enabled && <section id="destinations" className={s.section}><div className={s.container}>
         <div className={s.head}><div><h1>{h.popular.title}</h1><p>Our most-loved itineraries, planned end to end by local experts.</p></div><div className={s.tools}><Chips label="Trip duration" labels={h.popular.durationLabels.map(item=>item.label)} value={duration} onChange={setDuration} /><CarouselArrows target={popularTrack} label="packages" count={visibleTrips.length} /></div></div>
@@ -122,7 +123,7 @@ export default function Home() {
       </div></section>}
       {h.guides.enabled && guides.length>0 && <section id="explore" className={`${s.section} ${s.cream}`}><div className={s.container}>
         <div className={s.head}><div><h2>{h.guides.title}</h2><p>Pick a region and we’ll match you with the right itinerary.</p></div><Link className={`${s.link} ${s.desktopLink}`} href="/tour-packages">View all destinations →</Link></div>
-        <div className={s.tiles}>{guides.slice(0,4).map(guide => <Link className={s.tile} key={guide.title} href={`/tour-packages?destination=${encodeURIComponent(guide.title)}`}><Image src={guide.image||"/figma/imgImageMunnar.png"} alt={`${guide.title} tour packages`} width={604} height={760} sizes="(max-width: 600px) 45vw, (max-width: 1000px) 45vw, 302px" quality={85} loading="lazy" /><span className={s.tileCopy}><strong>{guide.title}</strong><span>{h.guides.exploreLabel} tours →</span></span></Link>)}</div>
+        <div className={s.tiles}>{guides.slice(0,4).map(guide => <Link className={s.tile} key={guide.title} href={`/tour-packages?destination=${encodeURIComponent(guide.title)}`}><Image src={guide.image||"/figma/imgImageMunnar.png"} alt={`${guide.title} tour packages`} width={604} height={760} sizes="(max-width: 600px) 45vw, (max-width: 1000px) 45vw, 302px" quality={85} loading="lazy" /><span className={s.tileCopy}><strong>{guide.title}</strong><span>{tileNotes[guide.title] ? `${tileNotes[guide.title]} · ` : ""}{h.guides.exploreLabel} →</span></span></Link>)}</div>
         <Link className={`${s.link} ${s.mobileLink}`} href="/tour-packages">View all destinations →</Link>
       </div></section>}
       {h.religious.enabled && religious.length>0 && <section id="religious" className={`${s.section} ${s.dark}`}><div className={s.container}>

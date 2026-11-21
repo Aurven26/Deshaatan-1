@@ -90,8 +90,8 @@
 /* Airport transfer */
 .airportWrap { padding-block: 56px 0; }
 .mobileLink { display: none; }
-.airport { position: relative; display: flex; align-items: center; gap: 32px; min-height: 131px; padding: 16px 40px 16px 24px; border-radius: 12px; background: #e3f57a; overflow: hidden; }
-.airportArt { position: relative; flex-shrink: 0; width: 279px; height: 139px; }
+.airport { position: relative; display: flex; align-items: center; gap: 32px; min-height: 131px; padding: 8px 40px 8px 24px; border-radius: 12px; background: #e3f57a; overflow: hidden; }
+.airportArt { position: relative; flex-shrink: 0; width: 279px; height: 115px; }
 .airportPlane { position: absolute; left: 0; top: 4px; width: 107px; height: auto; }
 .airportCar { position: absolute; right: 0; bottom: 0; width: 230px; height: auto; }
 .airportText { flex: 1; min-width: 0; }
