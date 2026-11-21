@@ -119,14 +119,14 @@ export default function Home() {
     <SiteHeader home onAction={(kind, title) => setModal({kind, title})} />
     <main id="main" className={`${s.wrap} home-v2`}>
       <HomeBanners />
-      {h.popular.enabled && <section id="destinations" className={s.section}><div className={s.container}>
+      {h.popular.enabled && <section id="destinations" className={`${s.section} ${s.first}`}><div className={s.container}>
         <div className={s.head}><div><h1>{h.popular.title}</h1><p>Our most-loved itineraries, planned end to end by local experts.</p></div><div className={s.tools}><Chips label="Trip duration" labels={h.popular.durationLabels.map(item=>item.label)} value={duration} onChange={setDuration} /><CarouselArrows target={popularTrack} label="packages" count={visibleTrips.length} /></div></div>
         <div className={s.trackBleed}><div className={s.track} ref={popularTrack} aria-live="polite">{visibleTrips.map(trip => <PackageCard key={trip.title} trip={trip} enquire={enquiry} />)}</div></div>
         {!visibleTrips.length && <p className={s.empty} role="status">{h.popular.emptyText} <button type="button" onClick={() => setDuration(-1)}>Show all</button></p>}
       </div></section>}
       {h.guides.enabled && guides.length>0 && <section id="explore" className={`${s.section} ${s.cream}`}><div className={s.container}>
         <div className={s.head}><div><h2>{h.guides.title}</h2><p>Pick a region and we’ll match you with the right itinerary.</p></div><Link className={`${s.link} ${s.desktopLink}`} href="/tour-packages">View all destinations →</Link></div>
-        <div className={s.tiles}>{guides.slice(0,4).map(guide => <Link className={s.tile} key={guide.title} href={`/tour-packages?destination=${encodeURIComponent(guide.title)}`}><Image src={guide.image||"/figma/imgImageMunnar.png"} alt={`${guide.title} tour packages`} width={604} height={760} sizes="(max-width: 600px) 45vw, (max-width: 1000px) 45vw, 302px" quality={85} loading="lazy" /><span className={s.tileCopy}><strong>{guide.title}</strong><span>{tileNotes[guide.title] && <em className={s.tileNote}>{tileNotes[guide.title]} · </em>}{h.guides.exploreLabel} →</span></span></Link>)}</div>
+        <div className={s.tiles}>{guides.slice(0,4).map(guide => <Link className={s.tile} key={guide.title} href={`/tour-packages?destination=${encodeURIComponent(guide.title)}`}><Image src={guide.image||"/figma/imgImageMunnar.png"} alt={`${guide.title} tour packages`} width={604} height={760} sizes="(max-width: 600px) 45vw, (max-width: 1000px) 45vw, 302px" quality={90} loading="lazy" /><span className={s.tileCopy}><strong>{guide.title}</strong><span>{tileNotes[guide.title] && <em className={s.tileNote}>{tileNotes[guide.title]} · </em>}{h.guides.exploreLabel} →</span></span></Link>)}</div>
         <Link className={`${s.link} ${s.mobileLink}`} href="/tour-packages">View all destinations →</Link>
       </div></section>}
       {h.religious.enabled && religious.length>0 && <section id="religious" className={`${s.section} ${s.dark}`}><div className={s.container}>

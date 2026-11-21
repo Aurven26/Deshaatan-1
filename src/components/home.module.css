@@ -2,6 +2,7 @@
 .wrap { --ink: #10213a; --muted: #5b6577; --soft: #8a93a3; --line: #eef0f4; --orange: #ef6a2e; --orange-deep: #c4501c; --peach: #ffe6da; --cream: #fbf7f2; --navy: #10213a; font-family: var(--jakarta); color: var(--ink); }
 .container { width: min(1280px, calc(100% - 64px)); margin-inline: auto; }
 .section { padding-block: 88px; }
+.first { padding-top: 48px; }
 .cream { background: var(--cream); }
 .dark { background: var(--navy); color: #fff; }
 
