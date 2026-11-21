@@ -17,31 +17,31 @@ export default function HomeBanners() {
   const advance = (direction:number) => setIndex(value=>(value+direction+banners.length)%banners.length);
   useEffect(()=>{
     if(!hero.enabled || !banners.length || !playing || hovered || focused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer=window.setInterval(()=>setIndex(value=>(value+1)%banners.length),hero.interval*1000);
-    return ()=>window.clearInterval(timer);
-  },[playing,hovered,focused,hero.enabled,hero.interval,banners.length]);
+    const timer=window.setTimeout(()=>setIndex(value=>(value+1)%banners.length),hero.interval*1000);
+    return ()=>window.clearTimeout(timer);
+  },[index,playing,hovered,focused,hero.enabled,hero.interval,banners.length]);
 
   if(!hero.enabled || !banners.length)return null;
-  return <section className={s.carousel} aria-label="Explore India banners" aria-roledescription="carousel"
+  return <section className={s.carousel} aria-label="Explore India banners" aria-roledescription="carousel" data-playing={playing && !hovered && !focused ? "true" : "false"} style={{"--interval":`${hero.interval}s`} as CSSProperties}
     onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)}
     onFocusCapture={()=>setFocused(true)} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))setFocused(false);}}
     onKeyDown={event=>{if(event.key==="ArrowLeft"){event.preventDefault();advance(-1);}if(event.key==="ArrowRight"){event.preventDefault();advance(1);}}}
     onTouchStart={event=>{touch.current=event.touches[0].clientX;}}
     onTouchEnd={event=>{if(touch.current!==null){const distance=touch.current-event.changedTouches[0].clientX;if(Math.abs(distance)>40)advance(distance>0?1:-1);}touch.current=null;}}>
-    {[-1,0,1].map(offset=>{
-      const position=((index%banners.length)+offset+banners.length)%banners.length;
-      const banner=banners[position];
+    {banners.map((banner,position)=>{
+      const n=banners.length, current=index%n;
+      let offset=((position-current)%n+n)%n; if(offset>n/2)offset-=n;
       const crop=[banner.width,banner.height,banner.left,banner.top];
       const style=crop ? {"--photo-width":`${crop[0]}%`,"--photo-height":`${crop[1]}%`,"--photo-left":`${crop[2]}%`,"--photo-top":`${crop[3]}%`} as CSSProperties : undefined;
       const href=banner.href || (banner.destination ? `/tour-packages?destination=${encodeURIComponent(banner.destination)}` : "/tour-packages");
-      return <div key={offset} className={`${s.panel} ${offset<0?s.previous:offset>0?s.next:s.current}`} data-banner={banner.artworkOnly?"india":banner.key} style={style} aria-hidden={offset!==0} inert={offset!==0} role="group" aria-roledescription="slide" aria-label={`${position+1} of ${banners.length}: ${banner.title}`}>
+      return <div key={banner.key||position} className={`${s.panel} ${offset===0?s.current:offset===-1?s.previous:offset===1?s.next:offset<0?s.farPrevious:s.farNext}`} data-banner={banner.artworkOnly?"india":banner.key} style={style} aria-hidden={offset!==0} inert={offset!==0} role="group" aria-roledescription="slide" aria-label={`${position+1} of ${banners.length}: ${banner.title}`}>
         <Image className={s.photo} src={banner.image} alt={banner.alt} width={2560} height={720}
           sizes="(max-width: 600px) calc(100vw - 44px), min(1280px, calc(100vw - 64px))"
-          quality={90} loading={offset===0?"eager":"lazy"} decoding="async" fetchPriority={offset===0?"high":"auto"} />
+          quality={90} loading={Math.abs(offset)<=1?"eager":"lazy"} decoding="async" fetchPriority={offset===0?"high":"auto"} />
         {/* Document navigation opens every banner destination at the page start. */}
         {banner.artworkOnly ? <a className={s.artLink} href={href} aria-label={banner.action} /> : <>
           <div className={s.overlay} />
-          <div className={s.copy} key={banner.key||position}><span className={s.badge}>{banner.badge}</span><h2>{banner.title}</h2><p>{banner.tagline}</p><a className={s.cta} href={href}>{banner.action}<img src="/figma/home-banners/arrow-right.svg" alt="" loading="lazy" decoding="async" /></a></div>
+          <div className={s.copy}><span className={s.badge}>{banner.badge}</span><h2>{banner.title}</h2><p>{banner.tagline}</p><a className={s.cta} href={href} onPointerMove={event=>{const r=event.currentTarget.getBoundingClientRect();event.currentTarget.style.setProperty("--gx",`${event.clientX-r.left}px`);event.currentTarget.style.setProperty("--gy",`${event.clientY-r.top}px`);}}><span className={s.sheen} aria-hidden="true" /><span className={s.ctaLabel}>{banner.action}</span><img src="/figma/home-banners/arrow-right.svg" alt="" loading="lazy" decoding="async" /></a></div>
         </>}
       </div>;
     })}
