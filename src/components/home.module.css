@@ -76,7 +76,17 @@
 .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 1.04px; color: var(--orange-deep); }
 .reviews h2 { margin-top: 12px; font-size: 38px; line-height: 46px; font-weight: 700; letter-spacing: -.38px; }
 .review { display: flex; flex-direction: column; gap: 20px; padding: 36px 40px; border-radius: 24px; background: #fff; box-shadow: 0 12px 32px rgba(16,33,58,.08); }
-.stars { font-size: 18px; letter-spacing: 2px; color: #f5a524; }
+.stars { display: flex; gap: 3px; color: #ffc14b; }
+.stars svg { width: 18px; height: 18px; fill: currentColor; }
+.reviewTop { display: flex; align-items: center; justify-content: space-between; }
+.quoteMark { display: none; font-size: 44px; line-height: 30px; height: 30px; font-weight: 800; color: #ffd2bc; overflow: hidden; }
+.reviewTrack { min-width: 0; }
+.reviewPeek, .reviewNav, .mobileOnly { display: none; }
+.reviewDots { display: flex; gap: 6px; }
+.reviewDots button { width: 6px; height: 6px; border-radius: 3px; background: #d9dee7; transition: width .3s, background .3s; }
+.reviewDots button[aria-current="true"] { width: 20px; background: var(--orange); }
+.tileNote { font-style: normal; }
+.airportPath, .airportJet, .airportRoad { display: none; }
 .quote { font-size: 19px; line-height: 30px; font-weight: 500; animation: fadeIn .4s ease; }
 .reviewFoot { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .person { display: flex; align-items: center; gap: 12px; }
@@ -112,7 +122,7 @@
 .searchList { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
 .searchList a, .searchList button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px 10px 18px; border-radius: 999px; background: #f6f7f9; font-size: 14px; font-weight: 500; color: var(--ink); transition: background .2s; }
 .searchList a:hover, .searchList button:hover { background: var(--peach); }
-.searchList svg { width: 10px; height: 10px; flex-shrink: 0; fill: none; stroke: var(--orange); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.searchList svg { width: 9px; height: 9px; flex-shrink: 0; fill: none; stroke: var(--orange); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
 @media (max-width: 1250px) {
   .head h1, .head h2 { font-size: 28px; }
@@ -133,7 +143,7 @@
 }
 @media (max-width: 600px) {
   .container { width: calc(100% - 32px); }
-  .section { padding-block: 40px; }
+  .section { padding-block: 36px 40px; }
   .head { display: block; margin-bottom: 18px; }
   .head h1, .head h2 { font-size: 24px; line-height: 30px; letter-spacing: -.12px; }
   .head p { margin-top: 6px; font-size: 14px; line-height: 20px; }
@@ -153,6 +163,7 @@
   .tileCopy { left: 14px; right: 14px; bottom: 14px; }
   .tileCopy strong { font-size: 18px; }
   .tileCopy span { font-size: 12px; }
+  .tileNote { display: none; }
   .desktopLink { display: none; }
   .mobileLink { display: inline-flex; margin-top: 18px; }
   .why { gap: 12px; padding-block: 40px; }
@@ -164,11 +175,22 @@
   .reviews { gap: 20px; }
   .eyebrow { font-size: 11px; }
   .reviews h2 { margin-top: 6px; font-size: 24px; line-height: 30px; }
-  .review { position: relative; gap: 14px; padding: 20px; border-radius: 20px; }
-  .review::before { content: "\201C"; position: absolute; top: 10px; right: 20px; font-size: 48px; line-height: 1; font-weight: 800; color: #fbd3bd; }
-  .reviewFoot { padding-top: 14px; border-top: 1px solid var(--line); }
+  .desktopOnly { display: none; }
+  .mobileOnly { display: inline; }
+  .reviewTrack { display: flex; gap: 12px; margin-right: -16px; overflow: hidden; }
+  .review { flex: 0 0 300px; gap: 14px; padding: 20px; border-radius: 20px; box-shadow: 0 8px 20px rgba(15,33,59,.07); }
+  .reviewPeek { display: flex; opacity: .6; }
+  .reviewPeek .quote { color: var(--muted); }
+  .quoteMark { display: block; }
+  .stars svg { width: 11px; height: 11px; }
+  .stars { gap: 2.5px; }
+  .reviewFoot { padding-top: 14px; border-top: 1px solid #eef0f4; }
+  .reviewFoot .reviewArrows { display: none; }
+  .reviewNav { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+  .reviewArrowsMobile button { width: 40px; height: 40px; }
+  .reviewArrowsMobile svg { width: 16px; height: 16px; }
   .stars { font-size: 14px; }
-  .quote { font-size: 14px; line-height: 22px; }
+  .quote { font-size: 14px; line-height: 22px; font-weight: 500; }
   .avatar { width: 40px; height: 40px; font-size: 13px; }
   .person strong { font-size: 14px; }
   .person small { font-size: 12px; }
@@ -177,14 +199,17 @@
   .airportWrap { padding-block: 24px 8px; }
   .airport { display: block; min-height: 184px; padding: 18px; border-radius: 20px; }
   .airport::before { content: ""; position: absolute; width: 200px; height: 200px; right: -47px; top: 34px; border-radius: 50%; background: rgba(255,255,255,.4); }
-  .airportArt { position: absolute; right: 12px; bottom: 22px; width: 150px; height: 76px; }
+  .airportArt { position: absolute; right: 12px; bottom: 16px; width: 150px; height: 76px; z-index: 1; }
+  .airportPath { display: block; position: absolute; left: 196px; top: 47px; width: 110px; height: 70px; fill: none; stroke: var(--orange); stroke-width: 1.6; stroke-dasharray: 3 6; stroke-linecap: round; }
+  .airportJet { display: block; position: absolute; left: 300px; top: 26px; width: 30px; height: 30px; fill: var(--orange); transform: rotate(45deg); }
+  .airportRoad { display: block; position: absolute; left: 178px; right: 9px; bottom: 19px; border-top: 2px dashed rgba(16,33,58,.18); }
   .airportPlane { display: none; }
   .airportCar { width: 150px; }
   .airportText { position: relative; max-width: 190px; }
   .airportLabel { display: block; margin-bottom: 6px; font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #4a6110; }
-  .airport h2 { font-size: 19px; line-height: 24px; letter-spacing: -.19px; }
-  .airport p { font-size: 12px; }
-  .airportButton { position: relative; margin-top: 16px; padding: 10px 14px 10px 16px; border-radius: 999px; border-color: var(--ink); background: var(--ink); color: #fff; font-size: 13px; }
+  .airport h2 { font-size: 19px; line-height: 24px; letter-spacing: -.19px; font-weight: 800; }
+  .airport p { margin-top: 6px; font-size: 12px; color: #33410c; }
+  .airportButton { position: relative; margin-top: 24px; padding: 10px 14px 10px 16px; border-radius: 999px; border-color: var(--ink); background: var(--ink); color: #fff; font-size: 13px; }
   .airportButton svg { display: block; }
   .about { padding-block: 32px 40px; }
   .about h2 { font-size: 20px; }
@@ -194,7 +219,7 @@
   .searches h2 { font-size: 18px; }
   .searchList { gap: 8px; margin-top: 14px; }
   .searchList a, .searchList button { padding: 8px 10px 8px 12px; font-size: 12px; gap: 6px; }
-  .searchList svg { width: 8px; height: 8px; }
+  .searchList svg { width: 8px; height: 8px; stroke-width: 1.6; }
 }
 @media (prefers-reduced-motion: reduce) {
   .photo img, .tile img, .quote { transition: none; animation: none; }
