@@ -120,7 +120,7 @@ export default function Home() {
         <div className={s.trackBleed}><div className={s.track} ref={popularTrack} aria-live="polite">{visibleTrips.map(trip => <PackageCard key={trip.title} trip={trip} enquire={enquiry} />)}</div></div>
         {!visibleTrips.length && <p className={s.empty} role="status">{h.popular.emptyText} <button type="button" onClick={() => setDuration(-1)}>Show all</button></p>}
       </div></section>}
-      {h.guides.enabled && guides.length>0 && <section id="guides" className={`${s.section} ${s.cream}`}><div className={s.container}>
+      {h.guides.enabled && guides.length>0 && <section id="explore" className={`${s.section} ${s.cream}`}><div className={s.container}>
         <div className={s.head}><div><h2>{h.guides.title}</h2><p>Pick a region and we’ll match you with the right itinerary.</p></div><Link className={`${s.link} ${s.desktopLink}`} href="/tour-packages">View all destinations →</Link></div>
         <div className={s.tiles}>{guides.slice(0,4).map(guide => <Link className={s.tile} key={guide.title} href={`/tour-packages?destination=${encodeURIComponent(guide.title)}`}><Image src={guide.image||"/figma/imgImageMunnar.png"} alt={`${guide.title} tour packages`} width={604} height={760} sizes="(max-width: 600px) 45vw, (max-width: 1000px) 45vw, 302px" quality={85} loading="lazy" /><span className={s.tileCopy}><strong>{guide.title}</strong><span>{h.guides.exploreLabel} tours →</span></span></Link>)}</div>
         <Link className={`${s.link} ${s.mobileLink}`} href="/tour-packages">View all destinations →</Link>
