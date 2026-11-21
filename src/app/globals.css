@@ -73,7 +73,7 @@ body:has(main.home-v2) .itinerary-form{margin-top:18px;padding:20px 16px;border-
 body:has(main.home-v2) .itinerary .itinerary-fields{gap:16px}
 body:has(main.home-v2) .itinerary label,body:has(main.home-v2) .itinerary .travellers-field>label{font-size:11px;letter-spacing:.2px;color:#10213a}
 body:has(main.home-v2) .itinerary input,body:has(main.home-v2) .itinerary select,body:has(main.home-v2) .itinerary .home-traveller-control>button,body:has(main.home-v2) .itinerary .phone-field{height:44px;min-height:44px;font-size:14px}
-body:has(main.home-v2) .itinerary input,body:has(main.home-v2) .itinerary select,body:has(main.home-v2) .itinerary .home-traveller-control>button{background:#f6f7f9;border-color:#e5e8ee}
+body:has(main.home-v2) .itinerary input,body:has(main.home-v2) .itinerary select,body:has(main.home-v2) .itinerary .home-traveller-control>button{background-color:#f6f7f9;border-color:#e5e8ee}
 body:has(main.home-v2) .itinerary .form-actions{gap:12px;margin-top:20px}
 body:has(main.home-v2) .itinerary .primary-button,body:has(main.home-v2) .itinerary .whatsapp-button{min-height:48px;padding:12px;font-size:15px;line-height:22px;font-weight:600;border-radius:12px}
 body:has(main.home-v2) .itinerary .whatsapp-button{background:#22b35e}
