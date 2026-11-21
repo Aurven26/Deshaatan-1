@@ -80,3 +80,5 @@ body:has(main.home-v2) .itinerary .whatsapp-button{background:#22b35e}
 body:has(main.home-v2) .itinerary .form-promises{gap:4px;font-size:11px;line-height:16px;margin-top:14px;padding-top:0;border:0}
 body:has(main.home-v2) .itinerary .form-promises span+span::before{content:"·";margin-right:4px}
 }
+/* Header breathing room now that the deals bar is off */
+@media(min-width:1001px){header .navbar{height:80px;margin-top:0;padding-top:0;align-items:center}header .nav-content{height:auto}}
