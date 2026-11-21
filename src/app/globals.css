@@ -63,3 +63,20 @@ header .nav-content{top:100px}
 }
 header .nav-links{margin-right:4px}
 @media(max-width:600px){header .nav-content .contact-button{display:none}header .nav-content{top:100px;left:16px;right:16px}}
+/* Homepage v3: mobile custom itinerary form as designed */
+@media(max-width:600px){
+body:has(main.home-v2) .itinerary{padding:40px 0}
+body:has(main.home-v2) .itinerary>.content{width:calc(100% - 32px)}
+body:has(main.home-v2) .itinerary h2{font-size:26px;line-height:32px}
+body:has(main.home-v2) .itinerary>.content>p{font-size:13px;line-height:20px;margin-top:14px}
+body:has(main.home-v2) .itinerary-form{margin-top:18px;padding:20px 16px;border-radius:20px}
+body:has(main.home-v2) .itinerary .itinerary-fields{gap:16px}
+body:has(main.home-v2) .itinerary label,body:has(main.home-v2) .itinerary .travellers-field>label{font-size:11px;letter-spacing:.2px;color:#10213a}
+body:has(main.home-v2) .itinerary input,body:has(main.home-v2) .itinerary select,body:has(main.home-v2) .itinerary .home-traveller-control>button,body:has(main.home-v2) .itinerary .phone-field{height:44px;min-height:44px;font-size:14px}
+body:has(main.home-v2) .itinerary input,body:has(main.home-v2) .itinerary select,body:has(main.home-v2) .itinerary .home-traveller-control>button{background:#f6f7f9;border-color:#e5e8ee}
+body:has(main.home-v2) .itinerary .form-actions{gap:12px;margin-top:20px}
+body:has(main.home-v2) .itinerary .primary-button,body:has(main.home-v2) .itinerary .whatsapp-button{min-height:48px;padding:12px;font-size:15px;line-height:22px;font-weight:600;border-radius:12px}
+body:has(main.home-v2) .itinerary .whatsapp-button{background:#22b35e}
+body:has(main.home-v2) .itinerary .form-promises{gap:4px;font-size:11px;line-height:16px;margin-top:14px;padding-top:0;border:0}
+body:has(main.home-v2) .itinerary .form-promises span+span::before{content:"·";margin-right:4px}
+}

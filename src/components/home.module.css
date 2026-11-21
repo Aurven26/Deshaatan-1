@@ -182,11 +182,12 @@
   .reviewPeek { display: flex; opacity: .6; }
   .reviewPeek .quote { color: var(--muted); }
   .quoteMark { display: block; }
-  .stars svg { width: 11px; height: 11px; }
+  .stars svg { width: 12px; height: 12px; }
   .stars { gap: 2.5px; }
   .reviewFoot { padding-top: 14px; border-top: 1px solid #eef0f4; }
   .reviewFoot .reviewArrows { display: none; }
   .reviewNav { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+  .reviewTrack { align-items: flex-start; }
   .reviewArrowsMobile button { width: 40px; height: 40px; }
   .reviewArrowsMobile svg { width: 16px; height: 16px; }
   .stars { font-size: 14px; }
