@@ -676,3 +676,45 @@
   .day::before { left: -21px; top: 23px; width: 9px; height: 9px; }
 }
 @media (prefers-reduced-motion: reduce) { .days::after { transform: scaleY(1); } .day::before { transition: none; } }
+
+/* ---- Route line v2: runs dot to dot, dots centred on each day header ---- */
+.days::before, .days::after { top: var(--line-top, 40px); bottom: auto; height: var(--line-len, 0px); left: 9px; width: 2px; }
+.day::before { top: calc(var(--dot-y, 43px) - 7px); left: -27px; width: 14px; height: 14px; border: 2px solid #cfd5dd; background: #fff; box-shadow: 0 0 0 3px #fff; }
+.day[data-passed="true"]::before { background: #ef6a2e; border-color: #ef6a2e; box-shadow: 0 0 0 3px #fff, 0 0 0 6px rgba(239,106,46,.16); transform: none; }
+@media (max-width: 700px) {
+  .days::before, .days::after { left: 6px; }
+  .day::before { top: calc(var(--dot-y, 28px) - 6px); left: -21px; width: 12px; height: 12px; }
+}
+
+/* ---- Enquiry form v2 ---- */
+.enquiry { padding: 0; gap: 0; min-height: 0; border-radius: 20px; overflow: hidden; border: 1px solid #e6e9ee; box-shadow: 0 16px 40px rgba(16,33,58,.08); }
+.formHead { padding: 20px 20px 16px; background: linear-gradient(180deg, #fff7f2, #fff); border-bottom: 1px solid #f0f1f4; }
+.enquiry .formHead h2 { margin: 0; padding: 0; border: 0; font-size: 19px; line-height: 26px; font-weight: 800; color: #10213a; }
+.formHead > p { margin-top: 4px; font-size: 13px; line-height: 19px; color: #5b6577; }
+.formPrice { display: flex; align-items: baseline; gap: 6px; margin-top: 12px; padding: 0; border: 0; }
+.formPrice span { font-size: 12px; color: #5b6577; }
+.formPrice strong { font-size: 22px; line-height: 1; font-weight: 800; color: #10213a; }
+.formBody { display: flex; flex-direction: column; gap: 10px; padding: 16px 16px 18px; }
+.formBody .field, .formBody .country, .formBody .compactField { min-height: 52px; }
+.formBody .compactField input, .formBody .compactField select, .formBody .travellerToggle { min-height: 50px; height: 50px; }
+.formBody .messageField textarea { min-height: 64px; }
+.formBody .orangeButton { margin-top: 4px; min-height: 52px; font-size: 16px; }
+.formWhatsapp { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; border-radius: 10px; font-size: 13.5px; font-weight: 600; color: #1d7a45; transition: background .2s; }
+.formWhatsapp:hover { background: #effaf0; }
+.formWhatsapp img { width: 20px; height: 20px; }
+.formTrust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 2px; padding-top: 12px; border-top: 1px dashed #e3e6eb; }
+.formTrust li { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-size: 11.5px; line-height: 15px; font-weight: 600; color: #3f4a59; }
+.formTrust svg { width: 18px; height: 18px; fill: none; stroke: #ef6a2e; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.formNote { display: none; }
+
+/* Desktop/tablet: form sits in its own column beside gallery and content, so nothing leaves a gap */
+@media (min-width: 701px) {
+  .container { display: grid; grid-template-columns: minmax(0, 1fr) 360px; column-gap: 24px; align-items: start; }
+  .container > * { grid-column: 1 / -1; }
+  .container > .topGrid { display: contents; }
+  .container > .topGrid > .gallery { grid-column: 1; }
+  .container > .topGrid > .enquiry { grid-column: 2; grid-row: span 2; position: sticky; top: 96px; }
+  .container > .contentColumn { grid-column: 1; width: auto; max-width: none; }
+  .container > .contentColumn > .tabs:first-child { margin-top: 20px; }
+}
+@media (min-width: 701px) and (max-width: 1100px) { .container { grid-template-columns: minmax(0, 1fr) 300px; column-gap: 16px; } }
