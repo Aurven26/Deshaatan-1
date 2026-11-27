@@ -62,13 +62,24 @@ export default function TourMotion() {
       const form = document.querySelector<HTMLElement>("#enquiry");
       const content = document.querySelector<HTMLElement>("[data-tour-content]");
       if (!form || !content || getComputedStyle(form).position !== "sticky") { form?.style.removeProperty("translate"); return; }
-      const overflow = content.getBoundingClientRect().bottom - (96 + form.offsetHeight);
+      const overflow = content.getBoundingClientRect().bottom - 40 - (96 + form.offsetHeight);
       form.style.translate = overflow < 0 ? `0 ${Math.round(overflow)}px` : "";
+    };
+    // Sliding pill behind the active section tab.
+    const moveTabPill = () => {
+      const nav = document.querySelector<HTMLElement>("[data-tabs]");
+      const active = nav?.querySelector<HTMLElement>('[aria-current="location"]');
+      if (!nav || !active) return;
+      nav.style.setProperty("--pill-x", `${active.offsetLeft}px`);
+      nav.style.setProperty("--pill-w", `${active.offsetWidth}px`);
+      nav.dataset.ready = "true";
+      if (nav.scrollWidth > nav.clientWidth) { const target = active.offsetLeft - (nav.clientWidth - active.offsetWidth) / 2; if (Math.abs(nav.scrollLeft - target) > 40) nav.scrollTo({ left: target, behavior: "smooth" }); }
     };
     const tick = () => {
       frame = 0;
       measure();
       pinForm();
+      moveTabPill();
       const ease = still.matches ? 1 : 0.18;
       page += (pageTarget - page) * ease;
       route += (routeTarget - route) * ease;
@@ -82,7 +93,10 @@ export default function TourMotion() {
     window.addEventListener("resize", schedule);
     const resize = new ResizeObserver(schedule);
     resize.observe(document.body);
-    return () => { cancelAnimationFrame(frame); resize.disconnect(); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", schedule); };
+    const tabs = document.querySelector("[data-tabs]");
+    const tabWatch = new MutationObserver(moveTabPill);
+    if (tabs) tabWatch.observe(tabs, { subtree: true, attributes: true, attributeFilter: ["aria-current"] });
+    return () => { cancelAnimationFrame(frame); resize.disconnect(); tabWatch.disconnect(); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", schedule); };
   }, []);
   return <div ref={bar} className="scroll-progress" aria-hidden="true" />;
 }

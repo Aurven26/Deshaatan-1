@@ -758,3 +758,33 @@
   .tabs { position: sticky; top: 80px; z-index: 20; background: #fff; box-shadow: 0 1px 0 #ededed; }
 }
 @media (min-width: 701px) and (max-width: 1000px) { .tabs { top: 76px; } }
+
+/* ---- Route dots: centred on the line, bigger ticks ---- */
+.day::before { box-sizing: border-box; width: 18px; height: 18px; left: -29px; top: calc(var(--dot-y, 43px) - 9px); }
+.day[data-passed="true"]::before { background-size: 11px; }
+@media (max-width: 700px) {
+  .day::before { width: 16px; height: 16px; left: -23px; top: calc(var(--dot-y, 28px) - 8px); }
+  .day[data-passed="true"]::before { background-size: 10px; }
+}
+
+/* ---- Section tabs: a segmented strip with a sliding pill and icons ---- */
+.tabs { position: sticky; isolation: isolate; gap: 4px; padding: 5px; margin-top: 20px; min-height: 0; border: 1px solid #eceef2; border-radius: 14px; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(16,33,58,.06); overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs::before { content: ""; position: absolute; z-index: -1; top: 5px; bottom: 5px; left: 0; width: var(--pill-w, 0); transform: translateX(var(--pill-x, 0)); border-radius: 10px; background: #10213a; box-shadow: 0 6px 14px rgba(16,33,58,.25); opacity: 0; transition: transform .35s cubic-bezier(.22,1,.36,1), width .35s cubic-bezier(.22,1,.36,1), opacity .2s; }
+.tabs[data-ready="true"]::before { opacity: 1; }
+.tabs a { position: relative; display: inline-flex; align-items: center; gap: 7px; padding: 10px 14px; border-radius: 10px; font-size: 14.5px; font-weight: 600; color: #4b5565; white-space: nowrap; transition: color .25s, background .2s; }
+.tabs a:hover { background: #f3f5f8; }
+.tabs a[aria-current] { background: transparent !important; color: #fff; border-bottom: 0 !important; }
+.tabs a svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+@media (min-width: 701px) { .tabs { top: 88px; box-shadow: 0 6px 18px rgba(16,33,58,.06); } }
+@media (max-width: 700px) {
+  .tabs { top: 66px; margin: 16px 0 0; width: 100%; height: auto; padding: 4px; border-radius: 12px; }
+  .tabs::before { top: 4px; bottom: 4px; }
+  .tabs a { padding: 9px 11px; font-size: 13px; height: auto; gap: 6px; }
+  .tabs a svg { width: 14px; height: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .tabs::before { transition: none; } }
+
+/* Top rating uses the same star artwork as the review cards */
+.ratingStars { width: 84px; height: 14px; object-fit: contain; }
+@media (max-width: 700px) { .ratingStars { width: 72px; height: 12px; } }
