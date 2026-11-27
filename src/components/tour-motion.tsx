@@ -37,13 +37,22 @@ export default function TourMotion() {
       const days = document.querySelector<HTMLElement>('[data-m="days"]');
       if (days) {
         const rect = days.getBoundingClientRect();
-        const reading = window.innerHeight * 0.6;
-        routeTarget = Math.min(1, Math.max(0, (reading - rect.top) / Math.max(1, rect.height)));
-        const line = rect.top + routeTarget * rect.height;
-        days.querySelectorAll<HTMLElement>(':scope > *').forEach(day => {
-          const top = day.getBoundingClientRect().top + 28;
-          day.dataset.passed = String(top <= line + 1);
+        const items = [...days.querySelectorAll<HTMLElement>(':scope > *')];
+        // Each dot sits on the centre of its day header; the line runs from the first dot to the last.
+        const centres = items.map(day => {
+          const head = day.querySelector<HTMLElement>("h3 button");
+          const offset = (head?.offsetHeight ?? 56) / 2;
+          day.style.setProperty("--dot-y", `${offset}px`);
+          return day.getBoundingClientRect().top - rect.top + offset;
         });
+        if (centres.length) {
+          const first = centres[0], last = centres[centres.length - 1];
+          days.style.setProperty("--line-top", `${first}px`);
+          days.style.setProperty("--line-len", `${Math.max(0, last - first)}px`);
+          const reading = window.innerHeight * 0.55 - rect.top;
+          routeTarget = Math.min(1, Math.max(0, (reading - first) / Math.max(1, last - first)));
+          items.forEach((day, i) => { day.dataset.passed = String(centres[i] <= reading + 1); });
+        }
       }
     };
     const tick = () => {

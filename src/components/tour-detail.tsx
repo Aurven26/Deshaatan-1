@@ -70,7 +70,7 @@ function TravelDateField() {
   </div>;
 }
 
-function EnquiryForm({ title, message, onReady }: { title: string; message: string; onReady: (text: string) => void }) {
+function EnquiryForm({ title, message, onReady, price }: { title: string; message: string; price?: string; onReady: (text: string) => void }) {
   const [pending,setPending]=useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -84,17 +84,28 @@ function EnquiryForm({ title, message, onReady }: { title: string; message: stri
     finally{setPending(false);}
   }
   return <form id="enquiry" className={s.enquiry} data-m="form" onSubmit={submit}>
-    <h2>Fill Enquiry Form Below!</h2>
-    <label className={s.field}><span>Full Name <b>*</b></span><input name="name" autoComplete="name" placeholder="Your full name" required /></label>
-    <label className={s.field}><span>Email <b>*</b></span><input name="email" type="email" autoComplete="email" placeholder="Your email address" required /></label>
-    <div className={s.phoneRow}><label className={s.country}><span className={s.srOnly}>Country code</span><select name="country" autoComplete="tel-country-code" defaultValue="+91"><option>+91</option><option>+1</option><option>+44</option><option>+61</option><option>+971</option></select><img src="/figma/itinerary/form-chevron.svg" alt="" /></label><label className={s.field}><span>Phone Number <b>*</b></span><input name="phone" type="tel" inputMode="tel" autoComplete="tel-national" placeholder="Phone number" pattern="[0-9 ()-]{7,20}" required /></label></div>
-    <div className={s.formRow}>
-      <TravelDateField />
-      <TravellerCountField />
+    <div className={s.formHead}>
+      <h2>Plan this trip with us</h2>
+      <p>Share a few details and a travel expert will call you with a plan for your dates.</p>
+      {price && <div className={s.formPrice}><span>From</span><strong>₹{price}</strong><span>for 2 people</span></div>}
     </div>
-    <label className={s.messageField}><span className={s.srOnly}>Message</span><textarea name="message" placeholder="Message..." key={message} defaultValue={message} /></label>
-    <button className={s.orangeButton} type="submit" disabled={pending} aria-busy={pending}>{pending ? 'Submitting…' : 'Send Enquiry'} <img className={s.enquiryArrow} src="/figma/itinerary/enquiry-chevron.svg" alt="" /></button>
-    <p className={s.formNote}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z" /><path d="M9 12l2 2 4-4" /></svg>Free quote · No booking obligation · Quick reply</p>
+    <div className={s.formBody}>
+      <label className={s.field}><span>Full name <b>*</b></span><input name="name" autoComplete="name" placeholder="Your full name" required /></label>
+      <div className={s.phoneRow}><label className={s.country}><span className={s.srOnly}>Country code</span><select name="country" autoComplete="tel-country-code" defaultValue="+91"><option>+91</option><option>+1</option><option>+44</option><option>+61</option><option>+971</option></select><img src="/figma/itinerary/form-chevron.svg" alt="" /></label><label className={s.field}><span>Phone number <b>*</b></span><input name="phone" type="tel" inputMode="tel" autoComplete="tel-national" placeholder="10-digit mobile number" pattern="[0-9 ()-]{7,20}" required /></label></div>
+      <label className={s.field}><span>Email <b>*</b></span><input name="email" type="email" autoComplete="email" placeholder="you@example.com" required /></label>
+      <div className={s.formRow}>
+        <TravelDateField />
+        <TravellerCountField />
+      </div>
+      <label className={s.messageField}><span className={s.srOnly}>Message</span><textarea name="message" placeholder="Anything we should know? Hotels, pace, special occasions (optional)" key={message} defaultValue={message} /></label>
+      <button className={s.orangeButton} type="submit" disabled={pending} aria-busy={pending}>{pending ? 'Sending…' : 'Get my free quote'} <img className={s.enquiryArrow} src="/figma/itinerary/enquiry-chevron.svg" alt="" /></button>
+      <a className={s.formWhatsapp} href="https://wa.me/917065780780?text=Hello%20Deshaatan%2C%20I%20would%20like%20to%20plan%20a%20trip." target="_blank" rel="noreferrer"><img src="/figma/itinerary/mobile-enquiry-whatsapp.svg" alt="" />Prefer WhatsApp? Chat with us</a>
+      <ul className={s.formTrust}>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>Reply in 15 min</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z" /><path d="M9 12l2 2 4-4" /></svg>No obligation</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M4 12h16M4 18h7" /><circle cx="17" cy="6" r="2" /><circle cx="14" cy="18" r="2" /></svg>Fully customisable</li>
+      </ul>
+    </div>
   </form>;
 }
 
@@ -224,13 +235,13 @@ export default function TourDetail({ tour }: { tour: Tour }) {
     <main id="tour-content" className={s.container}>
       {isVisible("introduction") && <nav className={s.breadcrumb} aria-label="Breadcrumb"><Link href="/">Home</Link><span>〉</span><Link href="/tour-packages">India Tours</Link><span>〉</span><span>{tour.title}</span></nav>}
       {isVisible("introduction") && <h1 className={s.title}>{tour.title}</h1>}
-      {isVisible("introduction") && <div className={s.titleMeta}>{isVisible("reviews") && reviewCount>0 && <a className={s.rating} href="#reviews"><strong>{reviewCount?average.toFixed(1):"New"}</strong><Stars rating={average} /><span>({reviewCount} reviews)</span></a>}<p className={s.duration}>{tour.duration ?? 12} days {startCity && <><span>•</span> {startCity === endCity ? <>Start and end in <strong>{startCity}</strong></> : <>Start in <strong>{startCity}</strong> · End in <strong>{endCity}</strong></>}</>}</p><div className={s.titleActions}><ShareMenu title={tour.title} icon="/figma/itinerary/share.svg" inline href={`/tours/${tour.slug}`} onCopy={share} /><button aria-pressed={saved} onClick={save}><img src="/figma/itinerary/heart.svg" alt="" />{saved ? "Saved" : "Save"}</button></div></div>}
+      {isVisible("introduction") && <div className={s.titleMeta}>{isVisible("reviews") && reviewCount>0 && <a className={s.rating} href="#reviews"><strong>{reviewCount?average.toFixed(1):"New"}</strong><Stars rating={average} /><span>({reviewCount} reviews)</span></a>}<p className={s.duration}>{tour.duration ?? 12} days {startCity && <><span>•</span> {startCity === endCity ? <>Start and end in <strong>{startCity}</strong></> : <>Start in <strong>{startCity}</strong> · End in <strong>{endCity}</strong></>}</>}</p><div className={s.titleActions}><ShareMenu title={tour.title} icon="/figma/itinerary/share.svg" inline href={`/tours/${tour.slug}`} onCopy={share} /></div></div>}
       <div className={s.topGrid} style={!isVisible("gallery")||!isVisible("enquiry")?{gridTemplateColumns:"minmax(0,1fr)"}:undefined}>{isVisible("gallery") && <div className={s.gallery}>
         <button className={s.mainPhoto} data-m="photo-main" onClick={() => {setGalleryIndex(0); setDialog("gallery");}} aria-label={`Open ${tour.title} photo gallery`}><Image src={photos[0]} alt={tour.title} fill priority quality={90} sizes="(max-width: 700px) 440px, (max-width: 1100px) 65vw, 634px" />{photos.length>1 && <span className={s.photoCount}><Asset name="2032-4167-imgClarityImageGalleryLine" />{photos.length} photos</span>}</button>
         <div className={s.gallerySide} data-m="photo-side">{photos.length>1 && <button className={s.secondaryPhoto} onClick={() => {setGalleryIndex(1);setDialog("gallery");}} aria-label="View all tour photos"><Image src={photos[1]} alt={tour.title} fill quality={90} sizes="(max-width: 700px) 222px, 340px" /><span><Asset name="2032-4167-imgClarityImageGalleryLine" />View all</span></button>}
           {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {formatDate(tour.reviews[0].date)}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{Array.from({length: tour.reviews[0].rating}, (_, i) => <Asset key={i} name="2032-4282-imgIcon" />)}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
         </div>
-      </div>}{isVisible("enquiry") && <EnquiryForm title={tour.title} message={message} onReady={setNotice} />}</div>
+      </div>}{isVisible("enquiry") && <EnquiryForm title={tour.title} price={tour.price} message={message} onReady={setNotice} />}</div>
       <div className={s.contentColumn} data-tour-content>
         {isVisible("navigation") && visibleTabs.length>0 && <nav className={s.tabs} aria-label="Trip sections">{visibleTabs.map(label => <a key={label} href={`#${sectionId(label)}`} aria-current={active === sectionId(label) ? "location" : undefined}>{label}</a>)}</nav>}
         {(isVisible("overview") || isVisible("highlights")) && <section id="overview" ref={overviewRef} className={s.overview}><Heading>Trip Highlights</Heading>{isVisible("overview") && (tour.overview ? <p className={s.overviewCopy}>{overviewOpen || tour.overview.length <= 400 ? tour.overview : `${tour.overview.slice(0, 400)}…`} {tour.overview.length > 400 && <button aria-expanded={overviewOpen} onClick={() => setOverviewOpen(!overviewOpen)}>{overviewOpen ? "Read less" : "Read more"}</button>}</p> : <MissingDetail onEnquire={enquire} />)}{isVisible("highlights") && <ul className={s.highlights} data-m="highlights">{tour.highlights.map(text => <li key={text}><Asset name="2032-4691-imgIcon" />{text}</li>)}</ul>}</section>}
