@@ -651,3 +651,11 @@
   .container > .topGrid > .enquiry { display: none; }
   .page > :global(.site-footer) { padding-bottom: 0; }
 }
+/* Mobile gallery swipe: every slide needs a snap point or mandatory snapping pulls back to the first photo */
+@media (max-width: 700px) {
+  .gallery { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x pan-y; }
+  .mainPhoto { scroll-snap-align: start; }
+  .gallerySide { scroll-snap-align: end; }
+  .mobileBarBottom > a.callContact { background: #f2f4f7; }
+  .mobileBarBottom > a.callContact svg { width: 20px; height: 20px; fill: none; stroke: #10213a; stroke-width: 1.8; stroke-linejoin: round; }
+}
