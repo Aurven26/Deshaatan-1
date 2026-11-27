@@ -10,6 +10,7 @@ import { tourAssets } from "./tour-assets";
 import type { Tour } from "@/data/golden-triangle";
 import s from "./tour-detail.module.css";
 import TravellerCountField from "./traveller-count-field";
+import { PackageCard, trackClass } from "./package-card";
 import WriteReviewPopup from "./write-review-popup";
 import DurationTabs, { matchesTripDuration } from "./duration-tabs";
 import {useCMSContent} from "./cms-content";
@@ -92,6 +93,7 @@ function EnquiryForm({ title, message, onReady }: { title: string; message: stri
     </div>
     <label className={s.messageField}><span className={s.srOnly}>Message</span><textarea name="message" placeholder="Message..." key={message} defaultValue={message} /></label>
     <button className={s.orangeButton} type="submit" disabled={pending} aria-busy={pending}>{pending ? 'Submitting…' : 'Send Enquiry'} <img className={s.enquiryArrow} src="/figma/itinerary/enquiry-chevron.svg" alt="" /></button>
+    <p className={s.formNote}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z" /><path d="M9 12l2 2 4-4" /></svg>Free quote · No booking obligation · Quick reply</p>
   </form>;
 }
 
@@ -223,7 +225,7 @@ export default function TourDetail({ tour }: { tour: Tour }) {
       <div className={s.topGrid} style={!isVisible("gallery")||!isVisible("enquiry")?{gridTemplateColumns:"minmax(0,1fr)"}:undefined}>{isVisible("gallery") && <div className={s.gallery}>
         <button className={s.mainPhoto} onClick={() => {setGalleryIndex(0); setDialog("gallery");}} aria-label={`Open ${tour.title} photo gallery`}><Image src={photos[0]} alt={tour.title} fill priority quality={90} sizes="(max-width: 700px) 440px, (max-width: 1100px) 65vw, 634px" /></button>
         <div className={s.gallerySide}>{photos.length>1 && <button className={s.secondaryPhoto} onClick={() => {setGalleryIndex(1);setDialog("gallery");}} aria-label="View all tour photos"><Image src={photos[1]} alt={tour.title} fill quality={90} sizes="(max-width: 700px) 222px, 340px" /><span><Asset name="2032-4167-imgClarityImageGalleryLine" />View all</span></button>}
-          {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {formatDate(tour.reviews[0].date)}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{"★".repeat(Math.max(1,Math.min(5,tour.reviews[0].rating)))}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
+          {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {formatDate(tour.reviews[0].date)}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{Array.from({length: tour.reviews[0].rating}, (_, i) => <Asset key={i} name="2032-4282-imgIcon" />)}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
         </div>
       </div>}{isVisible("enquiry") && <EnquiryForm title={tour.title} message={message} onReady={setNotice} />}</div>
       <div className={s.contentColumn} data-tour-content>
@@ -242,12 +244,7 @@ export default function TourDetail({ tour }: { tour: Tour }) {
           <DurationTabs value={relatedDuration} onChange={setRelatedDuration} className={s.durationTabs} label="Related trip duration" />
           <div className={s.relatedArrows}><img src="/figma/itinerary/related-arrows.svg" alt="" /><button aria-label="Previous related destinations" onClick={() => relatedRef.current?.scrollBy({left:-371, behavior:"smooth"})} /><button aria-label="Next related destinations" onClick={() => relatedRef.current?.scrollBy({left:371, behavior:"smooth"})} /></div>
         </div>
-        <div className={s.relatedCards} ref={relatedRef} aria-live="polite">{related.map(({title, days, price, previousPrice, id, image, href}) => <article key={id}>
-          <div className={s.relatedMedia}><Link className={s.relatedPhoto} href={href || `/tours/${id}`} aria-label={title}><Image src={image.startsWith("/")||image.startsWith("http")?image:`/figma/packages/${image}`} alt={title} width={336} height={336} quality={90} sizes="(max-width: 700px) 270px, 336px" /></Link><ShareMenu title={title} icon="imgShare2" onCopy={async name => {try {await navigator.clipboard.writeText(`${name} — ${window.location.origin}${href || `/tours/${id}`}`);setNotice("Package link copied.");} catch {setNotice("You can share this page using the address in your browser.");}}} /></div>
-          <div className={s.relatedMeta}><span>{days - 1}N / {days}D</span></div>
-          <h3><Link href={href || `/tours/${id}`}>{title}</Link></h3>
-          <div className={s.relatedPrice}><div>{previousPrice > price && <del>₹{previousPrice.toLocaleString("en-IN")}</del>}<p><strong>₹{price.toLocaleString("en-IN")}</strong><small>for 2 people</small></p></div><button onClick={() => {setModal({kind:"enquiry",title});}}>Get a callback</button></div>
-        </article>)}</div>
+        <div className={`${trackClass} ${s.relatedTrack}`} ref={relatedRef} aria-live="polite">{related.map(trip => <PackageCard key={trip.id} trip={{...trip, image: trip.image.startsWith("/") || trip.image.startsWith("http") ? trip.image : `/figma/packages/${trip.image}`, dots: "", category: trip.types[0], href: trip.href || `/tours/${trip.id}`}} enquire={title => setModal({kind: "enquiry", title})} />)}</div>
       </section>}
       <div className={s.cityLinks}>{linkSections.filter((_,i)=>isVisible(i===0?"attractions":"activities")).map((section,i) => <section key={i}><h2>{section.title}</h2><TourLinks links={section.links} onEnquire={title => setModal({kind:"enquiry",title})} /></section>)}</div>
       <div className={s.mobileRelated}>{linkSections.filter((_,i)=>isVisible(i===0?"attractions":"activities")).map((section,i) => <details key={i}><summary>{section.title}<img src="/figma/itinerary/policy-chevron.svg" alt="" /></summary><TourLinks links={section.links} onEnquire={title => setModal({kind:"enquiry",title})} /></details>)}</div>

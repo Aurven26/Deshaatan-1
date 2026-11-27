@@ -521,8 +521,6 @@
 .tabs a[aria-current] { background: #10213a; }
 .sectionHeading h2::after { background: #ef6a2e; }
 .dayNumber { background: #fff0e8; color: #c4501c; }
-.quote { background: #fff4ec; }
-.blueStars { color: #ffc14b; font-size: 14px; letter-spacing: 2px; }
 .relatedPhoto { display: block; }
 .relatedCards { gap: 24px; }
 .relatedCards article { width: 302px; }
@@ -532,18 +530,6 @@
 .relatedPrice small { display: block; padding: 2px 0 0; font-size: 12px; }
 .relatedPrice button { width: auto; height: auto; padding: 9px 14px; border: 1.5px solid #ef6a2e; border-radius: 999px; color: #ef6a2e; font-size: 13px; font-weight: 600; transition: background .2s, color .2s; }
 .relatedPrice button:hover { background: #ef6a2e; color: #fff; }
-/* The floating bar spans the content column only, not the enquiry column or the footer */
-@media (min-width: 1101px) {
-  .floating { left: max(32px, calc((100% - 1280px) / 2)); width: calc(min(1280px, 100% - 64px) - 390px); transform: translateY(140%); }
-  .floatingVisible { transform: translateY(0); }
-  .desktopBar { gap: 12px; padding: 10px 12px 10px 20px; min-height: 72px; }
-  .desktopBar nav { gap: 0; padding-right: 12px; }
-  .desktopBar nav img { display: none; }
-  .desktopBar nav a { font-size: 14px; padding: 8px 8px; }
-  .floatingPrice strong { font-size: 20px; }
-  .floatingPrice span, .floatingPrice small { font-size: 12px; line-height: 16px; }
-  .desktopBar .orangeButton { width: auto; min-height: 48px; padding: 10px 20px; font-size: 15px; }
-}
 @media (max-width: 700px) {
   .container { width: calc(100% - 32px); }
   /* Gallery: one photo per swipe with a visible peek, so it reads as a carousel */
@@ -577,20 +563,12 @@
 .policies p, .checklist li, .overviewCopy, .highlights li { color: #3f4a59; }
 .relatedPrice button { color: #c4501c; border-color: #ef6a2e; }
 .relatedPrice del { color: #b3401a; }
-.histogram > div:first-child b, .fullBar { background: #ef6a2e; }
-.histogram b { background: #5b6577; }
-.histogram > div:last-child b, .histogram > div:last-child .emptyBar { background: #8a93a3; }
-.linkButton, .missingDetail button, .reviewActions button[aria-pressed=true], .infoDialog a { color: #c4501c; }
 .reviewer span { display: none; }
 
 /* Itinerary: overnight stay on its own line */
 .dayBody .overnight { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; color: #10213a; }
 .dayBody .overnight svg { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: #ef6a2e; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-/* Floating bar: solid, so text behind it never shows through */
-.desktopBar { background: #10213a; backdrop-filter: none; border-color: #10213a; box-shadow: 0 10px 30px rgba(16,33,58,.3); }
-.desktopBar nav a { color: #c9d1de; }
-.desktopBar nav a[aria-current] { color: #fff; }
 
 /* Reviews on desktop: a grid that fits, no half-cut cards */
 @media (min-width: 701px) {
@@ -623,3 +601,17 @@
   .relatedPrice del { font-size: 12px; }
   .mobilePrice span { font-size: 12px; }
 }
+
+/* Enquiry form polish: clearer header, empty fields look empty, visible focus */
+.enquiry { box-shadow: 0 12px 32px rgba(16,33,58,.06); border-color: #e9ebef; background: #fff; }
+.enquiry h2 { margin: -17px -12px 4px; padding: 18px 18px 16px; border-bottom: 1px solid #eef0f3; font-size: 18px; color: #10213a; }
+.field, .country, .compactField, .messageField textarea { border-color: #dfe3e8; border-radius: 10px; transition: border-color .2s, box-shadow .2s; }
+.field:hover, .country:hover, .compactField:hover, .messageField textarea:hover { border-color: #c3c9d2; }
+.field:focus-within, .country:focus-within, .compactField:focus-within, .messageField textarea:focus { border-color: #ef6a2e; box-shadow: 0 0 0 3px rgba(239,106,46,.14); outline: none; }
+.field input { color: #10213a; font-weight: 500; }
+.field input::placeholder, .messageField textarea::placeholder { color: #98a1ae; font-weight: 400; }
+.messageField textarea { font-size: 14px; line-height: 20px; }
+.enquiry .orangeButton { min-height: 52px; border-radius: 12px; font-weight: 700; }
+.formNote { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: -2px; font-size: 12px; color: #5b6577; text-align: center; }
+.formNote svg { width: 14px; height: 14px; flex-shrink: 0; fill: none; stroke: #2e9b5a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.relatedTrack { margin-top: 24px; }
