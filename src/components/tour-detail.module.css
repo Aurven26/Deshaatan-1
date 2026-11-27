@@ -828,3 +828,21 @@
 }
 /* short laptop screens: drop the helper line so the whole form fits */
 @media (min-width: 701px) and (max-height: 800px) { .formHead > p { display: none; } }
+
+/* ---- Pass 7b: tabs fit without scrolling on smaller laptops and tablets ---- */
+@media (min-width: 701px) and (max-width: 1250px) {
+  .tabs a svg { display: none; }
+  .tabs a { padding: 9px 10px; font-size: 13.5px; }
+}
+
+/* ---- Pass 7b: tablets get one column; the form sits under the gallery, full width ---- */
+@media (min-width: 701px) and (max-width: 1023px) {
+  .container { grid-template-columns: minmax(0, 1fr); }
+  .container > .topGrid > .gallery, .container > .contentColumn { grid-column: 1; }
+  .container > .topGrid > .enquiry { grid-column: 1; grid-row: auto; position: static; display: block; max-height: none; overflow: visible; margin-top: 20px; translate: none !important; }
+  .formHead { display: grid; grid-template-columns: 1fr auto; align-items: end; column-gap: 16px; }
+  .formHead > p { display: block; grid-column: 1; }
+  .formPrice { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
+  .formBody { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .formBody > :nth-child(n+5) { grid-column: 1 / -1; }
+}
