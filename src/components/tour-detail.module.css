@@ -876,3 +876,71 @@
   .policies summary::before { width: 30px; height: 30px; background-size: 16px; }
   .policies p { padding: 0 0 16px; font-size: 13.5px; line-height: 1.7; }
 }
+
+/* ---- Pass 9: no orange accent under the active tab ---- */
+.tabs::after { display: none; }
+
+/* ---- Pass 9: popovers can extend past the form box (no clipping) ---- */
+@media (min-width: 701px) { .container > .topGrid > .enquiry { overflow: visible; max-height: none; } }
+.enquiry { overflow: visible; }
+.formHead { border-radius: 20px 20px 0 0; }
+
+/* ---- Pass 9: travel date shows as text; the whole box opens the calendar ---- */
+.dateField input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.compactField.dateField .datePlaceholder { left: 13px; right: 34px; top: 50%; transform: translateY(-50%); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #10213a; font-weight: 500; }
+.dateField[data-empty=true] .datePlaceholder { color: #5b6577; }
+.dateField:has(input:focus) .datePlaceholder { visibility: visible; }
+.calendarToggle { inset: 0; width: auto; display: flex; justify-content: flex-end; align-items: center; padding-right: 13px; border-radius: inherit; cursor: pointer; }
+.calendarToggle[aria-expanded=true] img { transform: rotate(180deg); }
+.calendarToggle img { transition: transform .2s ease; }
+.dateField:has(.calendarToggle[aria-expanded=true]), .compactField:has(.travellerToggle[aria-expanded=true]) { border-color: #ef6a2e; box-shadow: 0 0 0 3px rgba(239,106,46,.14); }
+
+/* ---- Pass 9: calendar popover ---- */
+@keyframes popIn { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: none; } }
+.calendar, .travellerPicker { width: 300px; padding: 14px; border: 1px solid #e6e9ee; border-radius: 16px; box-shadow: 0 18px 40px rgba(16,33,58,.16); animation: popIn .16s ease-out; }
+.calendarHeader { margin-bottom: 10px; }
+.calendarHeader strong { font-size: 14.5px; font-weight: 700; color: #10213a; }
+.calendarHeader button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #e6e9ee; }
+.calendarHeader button:not(:disabled):hover { background: #fff3ec; border-color: #ef6a2e; }
+.calendarDays { gap: 3px; }
+.calendarDays > span { font-size: 11px; font-weight: 600; line-height: 26px; color: #7a8494; }
+.calendarDays button { min-height: 36px; border-radius: 10px; font-size: 13px; font-weight: 500; color: #10213a; transition: background .15s, color .15s; }
+.calendar button:disabled { opacity: .28; }
+.calendar button:not(:disabled):hover { background: #fff3ec; color: #c2410c; }
+.calendarDays button[aria-pressed=true], .calendarDays button[aria-pressed=true]:hover { background: #ef6a2e; color: #fff; font-weight: 700; box-shadow: 0 6px 14px rgba(239,106,46,.3); }
+
+/* ---- Pass 9: traveller popover ---- */
+.travellerPicker { width: 280px; padding: 6px 16px 16px; }
+.travellerRow { margin: 0; padding: 14px 0; border-bottom: 1px solid #eef0f3; font-size: 14.5px; font-weight: 600; color: #10213a; }
+.travellerRow > span::after { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: #7a8494; }
+.travellerRow:first-child > span::after { content: "Age 12+"; }
+.travellerRow:nth-child(2) > span::after { content: "Age 2 to 11"; }
+.travellerStepper { grid-template-columns: 34px 28px 34px; gap: 6px; }
+.travellerStepper button { width: 34px; height: 34px; border-radius: 50%; border-color: #dfe3e8; color: #10213a; transition: background .15s, border-color .15s; }
+.travellerStepper button:not(:disabled):hover { background: #fff3ec; border-color: #ef6a2e; color: #c2410c; }
+.travellerStepper output { font-size: 15px; font-weight: 700; color: #10213a; }
+.travellerDone { margin-top: 14px; min-height: 42px; border-radius: 10px; background: linear-gradient(90deg, #ff7a45, #e8501f); font-size: 14px; font-weight: 700; box-shadow: 0 8px 18px rgba(232,80,31,.25); }
+@media (prefers-reduced-motion: reduce) { .calendar, .travellerPicker { animation: none; } }
+
+/* ---- Pass 9: WhatsApp as a clean secondary button ---- */
+.formWhatsapp { min-height: 42px; border: 1px solid #cfe8d7; border-radius: 12px; background: #fff; color: #17663a; font-weight: 600; transition: background .2s, border-color .2s; }
+.formWhatsapp:hover { background: #f1fbf4; border-color: #9fd4b1; }
+
+/* ---- Pass 9: featured review card ---- */
+.quote { position: relative; gap: 10px; padding: 18px 18px 16px; border: 1px solid #d8e8fb; border-radius: 18px; background: linear-gradient(160deg, #eef6ff 0%, #f8fbff 100%); transition: transform .2s ease, box-shadow .2s ease; }
+.quote:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(16,33,58,.08); }
+.quoteTop { display: flex; align-items: center; justify-content: space-between; }
+.quoteTop img { width: 22px; height: auto; }
+.quoteBadge { padding: 4px 10px; border-radius: 999px; background: #fff; border: 1px solid #d8e8fb; font-size: 11.5px; font-weight: 600; color: #1d4ed8; }
+.quote p { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; font: 500 15px/1.6 var(--jakarta); color: #1f2d3d; }
+.quote footer { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 10px; row-gap: 8px; padding-top: 12px; border-top: 1px dashed #cfe0f5; font-family: var(--jakarta); }
+.quoteAvatar { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: #10213a; color: #fff; font-size: 14px; font-weight: 700; }
+.quoteWho { display: flex; flex-direction: column; min-width: 0; }
+.quoteWho strong { font-size: 13.5px; line-height: 18px; color: #10213a; }
+.quoteWho small { font-size: 12px; line-height: 16px; color: #6b7280; }
+.quote footer > div { grid-column: 1 / -1; margin: 0; font-size: 12.5px; font-weight: 600; color: #1f2d3d; }
+.quote .blueStars img { width: 16px; height: 16px; }
+
+/* ---- Pass 9: less dead space between the last section and the footer ---- */
+.related { margin-bottom: 40px; }
+@media (max-width: 700px) { .related { margin-bottom: 24px; } }

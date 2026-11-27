@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { SiteHeader, SiteFooter } from "./site-chrome";
 import { ShareMenu } from "./share-menu";
@@ -52,6 +51,7 @@ function TravelDateField() {
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
+  const toggle = useRef<HTMLButtonElement>(null);
   const [travelDate, setTravelDate] = useState("");
   const [earliestDate, setEarliestDate] = useState("");
   const [month, setMonth] = useState<Date | null>(null);
@@ -70,14 +70,14 @@ function TravelDateField() {
   }, [open]);
   const days = month ? new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate() : 0;
   function changeMonth(offset: number) { if (month) setMonth(new Date(month.getFullYear(), month.getMonth() + offset, 1)); }
-  return <div ref={root} className={`${s.compactField} ${s.dateField}`} data-empty={!travelDate} onKeyDown={event => { if (event.key === "Escape") { setOpen(false); input.current?.focus(); } }}>
+  return <div ref={root} className={`${s.compactField} ${s.dateField}`} data-empty={!travelDate} onKeyDown={event => { if (event.key === "Escape") { setOpen(false); toggle.current?.focus(); } }}>
     <label className={s.srOnly} htmlFor={id}>Travel Date</label>
-    {!travelDate && <span className={s.datePlaceholder} aria-hidden="true">Travel Date <b>*</b></span>}
-    <input ref={input} id={id} name="date" type="date" min={earliestDate || undefined} value={travelDate} onChange={event => { setTravelDate(event.target.value); setOpen(false); }} onClick={() => setOpen(true)} required />
-    <button className={s.calendarToggle} type="button" aria-label="Choose travel date" aria-expanded={open} aria-controls={`${id}-calendar`} onClick={() => setOpen(!open)}><img src="/figma/itinerary/date-chevron.svg" alt="" /></button>
+    <span className={s.datePlaceholder} aria-hidden="true">{travelDate ? new Date(`${travelDate}T00:00:00`).toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"}) : <>Travel Date <b>*</b></>}</span>
+    <input ref={input} id={id} name="date" type="date" min={earliestDate || undefined} value={travelDate} onChange={event => { setTravelDate(event.target.value); setOpen(false); }} tabIndex={-1} required />
+    <button ref={toggle} className={s.calendarToggle} type="button" aria-label={travelDate ? `Travel date ${travelDate}, change` : "Choose travel date"} aria-expanded={open} aria-controls={`${id}-calendar`} onClick={() => setOpen(!open)}><img src="/figma/itinerary/date-chevron.svg" alt="" /></button>
     {open && month && <div className={s.calendar} id={`${id}-calendar`} role="dialog" aria-label="Choose travel date">
       <div className={s.calendarHeader}><button type="button" aria-label="Previous month" disabled={dateKey(month).slice(0,7) <= earliestDate.slice(0,7)} onClick={() => changeMonth(-1)}><img src="/figma/itinerary/form-chevron.svg" alt="" /></button><strong aria-live="polite">{month.toLocaleDateString("en-IN", {month:"long", year:"numeric"})}</strong><button type="button" aria-label="Next month" onClick={() => changeMonth(1)}><img src="/figma/itinerary/form-chevron.svg" alt="" /></button></div>
-      <div className={s.calendarDays}>{["Su","Mo","Tu","We","Th","Fr","Sa"].map(day => <span key={day}>{day}</span>)}{Array.from({length:month.getDay()}, (_, i) => <span key={`blank-${i}`} />)}{Array.from({length:days}, (_, i) => { const date = new Date(month.getFullYear(), month.getMonth(), i + 1); const value = dateKey(date); return <button type="button" key={value} disabled={value < earliestDate} aria-label={date.toLocaleDateString("en-IN", {day:"numeric",month:"long",year:"numeric"})} aria-pressed={travelDate === value} onClick={() => {setTravelDate(value); setOpen(false); input.current?.focus();}}>{i + 1}</button>; })}</div>
+      <div className={s.calendarDays}>{["Su","Mo","Tu","We","Th","Fr","Sa"].map(day => <span key={day}>{day}</span>)}{Array.from({length:month.getDay()}, (_, i) => <span key={`blank-${i}`} />)}{Array.from({length:days}, (_, i) => { const date = new Date(month.getFullYear(), month.getMonth(), i + 1); const value = dateKey(date); return <button type="button" key={value} disabled={value < earliestDate} aria-label={date.toLocaleDateString("en-IN", {day:"numeric",month:"long",year:"numeric"})} aria-pressed={travelDate === value} onClick={() => {setTravelDate(value); setOpen(false); toggle.current?.focus();}}>{i + 1}</button>; })}</div>
     </div>}
   </div>;
 }
@@ -240,13 +240,13 @@ export default function TourDetail({ tour }: { tour: Tour }) {
     <TourMotion />
     <SiteHeader onAction={(kind, title) => setModal({kind, title})} />
     <main id="tour-content" className={s.container}>
-      {isVisible("introduction") && <nav className={s.breadcrumb} aria-label="Breadcrumb"><Link href="/">Home</Link><span>〉</span><Link href="/tour-packages">India Tours</Link><span>〉</span><span>{tour.title}</span></nav>}
+      {isVisible("introduction") && <nav className={s.breadcrumb} aria-label="Breadcrumb"><span>Home</span><span aria-hidden="true">〉</span><span>India Tours</span><span aria-hidden="true">〉</span><span aria-current="page">{tour.title}</span></nav>}
       {isVisible("introduction") && <h1 className={s.title}>{tour.title}</h1>}
       {isVisible("introduction") && <div className={s.titleMeta}>{isVisible("reviews") && reviewCount>0 && <a className={s.rating} href="#reviews"><strong>{reviewCount?average.toFixed(1):"New"}</strong>{Math.round(average) >= 4 ? <img className={s.ratingStars} src={`/figma/itinerary/review-stars-${Math.round(average)}.png`} alt={`${average.toFixed(1)} out of 5 stars`} /> : <Stars rating={average} />}<span>({reviewCount} reviews)</span></a>}<p className={s.duration}>{tour.duration ?? 12} days {startCity && <><span>•</span> {startCity === endCity ? <>Start and end in <strong>{startCity}</strong></> : <>Start in <strong>{startCity}</strong> · End in <strong>{endCity}</strong></>}</>}</p><div className={s.titleActions}><ShareMenu title={tour.title} icon="/figma/itinerary/share.svg" inline href={`/tours/${tour.slug}`} onCopy={share} /></div></div>}
       <div className={s.topGrid} style={!isVisible("gallery")||!isVisible("enquiry")?{gridTemplateColumns:"minmax(0,1fr)"}:undefined}>{isVisible("gallery") && <div className={s.gallery}>
         <button className={s.mainPhoto} data-m="photo-main" onClick={() => {setGalleryIndex(0); setDialog("gallery");}} aria-label={`Open ${tour.title} photo gallery`}><Image src={photos[0]} alt={tour.title} fill priority quality={90} sizes="(max-width: 700px) 440px, (max-width: 1100px) 65vw, 634px" />{photos.length>1 && <span className={s.photoCount}><Asset name="2032-4167-imgClarityImageGalleryLine" />{photos.length} photos</span>}</button>
         <div className={s.gallerySide} data-m="photo-side">{photos.length>1 && <button className={s.secondaryPhoto} onClick={() => {setGalleryIndex(1);setDialog("gallery");}} aria-label="View all tour photos"><Image src={photos[1]} alt={tour.title} fill quality={90} sizes="(max-width: 700px) 222px, 340px" /><span><Asset name="2032-4167-imgClarityImageGalleryLine" />View all</span></button>}
-          {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {formatDate(tour.reviews[0].date)}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{Array.from({length: tour.reviews[0].rating}, (_, i) => <Asset key={i} name="2032-4282-imgIcon" />)}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
+          {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><span className={s.quoteTop}><Asset name="2032-4282-img" /><span className={s.quoteBadge}>Traveller review</span></span><p>{tour.reviews[0].text}</p><footer><span className={s.quoteAvatar} aria-hidden="true">{tour.reviews[0].name.trim().charAt(0).toUpperCase()}</span><span className={s.quoteWho}><strong>{tour.reviews[0].name}</strong><small>{formatDate(tour.reviews[0].date)}</small></span><div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{Array.from({length: tour.reviews[0].rating}, (_, i) => <Asset key={i} name="2032-4282-imgIcon" />)}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
         </div>
       </div>}{isVisible("enquiry") && <EnquiryForm title={tour.title} price={tour.price} message={message} onReady={setNotice} />}</div>
       <div className={s.contentColumn} data-tour-content>

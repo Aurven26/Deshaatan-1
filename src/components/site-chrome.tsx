@@ -7,7 +7,8 @@ function Icon({name, className = ""}: {name: string; className?: string}) { retu
 export function SiteHeader({onAction}: {onAction: (kind: "search" | "login", title: string) => void; home?: boolean}) {
  const {visibility,navigation,homePage:{header:h}}=useCMSContent();
  // Temporarily hide Guides in both desktop and mobile navigation.
- const nav=navigation.filter(([label])=>h.showGuides || label.toLowerCase()!=="guides");
+ // Destinations is hidden from the header on every page.
+ const nav=navigation.filter(([label])=>(h.showGuides || label.toLowerCase()!=="guides") && label.trim().toLowerCase()!=="destinations");
  const [menuOpen, setMenuOpen] = useState(false);
  const headerRef = useRef<HTMLElement>(null);
  useEffect(() => {
