@@ -944,3 +944,17 @@
 /* ---- Pass 9: less dead space between the last section and the footer ---- */
 .related { margin-bottom: 40px; }
 @media (max-width: 700px) { .related { margin-bottom: 24px; } }
+
+/* ---- Pass 9b: review card fits its slot; rating sits beside the name ---- */
+.quote { gap: 8px; padding: 16px 16px 14px; min-height: 0; overflow: hidden; }
+.quote p { -webkit-line-clamp: 3; font-size: 14.5px; line-height: 1.55; }
+.quote footer { grid-template-columns: auto minmax(0, 1fr) auto; padding-top: 10px; margin-top: auto; }
+.quote footer > div { grid-column: auto; justify-self: end; }
+.quote footer > div > span:last-child { display: none; }
+.quote .blueStars img { width: 14px; height: 14px; }
+.quoteAvatar { width: 30px; height: 30px; font-size: 13px; }
+
+/* ---- Pass 9b: an empty city-links block no longer adds space above the footer ---- */
+.cityLinks:empty { display: none; }
+.related { margin-bottom: 56px; }
+@media (max-width: 700px) { .related { margin-bottom: 32px; } }
