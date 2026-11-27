@@ -512,37 +512,3 @@
   .page *, .page *::before, .page *::after { animation:none!important; transition:none!important; }
   .phonePath { stroke-dasharray:1 1; visibility:visible; }
 }
-
-/* ---- Brand pass (Nov 2026): one typeface, Deshaatan orange/navy, homepage grid ---- */
-.page, .page :where(*:not(svg):not(path)) { font-family: var(--jakarta) !important; }
-.page { --purple: #ef6a2e; }
-.container { max-width: 1280px; width: calc(100% - 64px); }
-.calendarDays button[aria-pressed=true] { background: #ef6a2e; }
-.tabs a[aria-current] { background: #10213a; }
-.sectionHeading h2::after { background: #ef6a2e; }
-.dayNumber { background: #fff0e8; color: #c4501c; }
-.quote { background: #fff4ec; }
-.blueStars { color: #ffc14b; font-size: 14px; letter-spacing: 2px; }
-.formPrice { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; padding: 2px 6px 12px; margin-bottom: 4px; border-bottom: 1px solid #f0f1f4; }
-.formPrice strong { font-size: 26px; line-height: 1.2; font-weight: 800; color: #10213a; }
-.formPrice span { font-size: 13px; color: #6b7585; }
-.relatedPhoto { display: block; }
-.relatedCards { gap: 24px; }
-.relatedCards article { width: 302px; }
-.relatedCards h3 a:hover { color: #ef6a2e; }
-.relatedMeta span { font-size: 13px; font-weight: 600; color: #5b6577; }
-.relatedPrice strong { font-size: 22px; color: #10213a; }
-.relatedPrice small { display: block; padding: 2px 0 0; font-size: 12px; }
-.relatedPrice button { width: auto; height: auto; padding: 9px 14px; border: 1.5px solid #ef6a2e; border-radius: 999px; color: #ef6a2e; font-size: 13px; font-weight: 600; transition: background .2s, color .2s; }
-.relatedPrice button:hover { background: #ef6a2e; color: #fff; }
-
-/* Desktop: the enquiry form stays beside the content instead of leaving a blank column */
-@media (min-width: 1101px) {
-  .container { display: grid; grid-template-columns: minmax(0, 1fr) 370px; column-gap: 20px; }
-  .container > * { grid-column: 1 / -1; }
-  .container > .topGrid { display: contents; }
-  .container > .topGrid > .gallery { grid-column: 1; margin-bottom: 24px; }
-  .container > .topGrid > .enquiry { grid-column: 2; grid-row: span 2; position: sticky; top: 100px; align-self: start; }
-  .container > .contentColumn { grid-column: 1; width: auto; max-width: none; }
-  .floating { display: none; }
-}
