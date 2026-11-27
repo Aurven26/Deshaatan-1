@@ -121,7 +121,7 @@ function Itinerary({ tour, enquire }: { tour: Tour; enquire:()=>void }) {
   const allExpanded = expanded.length === tour.days.length;
   return <section id="itinerary" className={s.itinerarySection}>
     <Heading action={<button className={s.expandAll} onClick={() => setExpanded(allExpanded ? [] : tour.days.map((_, i) => i))}>{allExpanded ? "Collapse All" : "Expand All"}</button>}>Itinerary</Heading>
-    <div className={s.days} data-m="days">{tour.days.map((day, i) => <div className={`${s.day} ${day.desktopOnly ? s.desktop : ""}`} key={`${day.day}-${i}`}>
+    <div className={s.days} data-m="days"><span className={s.routeMarker} aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 16V11l2-5h10l2 5v5M5 16h14M5 16v2M19 16v2M7.5 13h.01M16.5 13h.01M6 11h12" /></svg></span>{tour.days.map((day, i) => <div className={`${s.day} ${day.desktopOnly ? s.desktop : ""}`} key={`${day.day}-${i}`}>
       <h3><button aria-expanded={expanded.includes(i)} aria-controls={`day-${i}`} onClick={() => setExpanded(current => current.includes(i) ? current.filter(n => n !== i) : [...current, i])}><span className={s.dayNumber}>DAY {day.day}</span><span className={s.dayTitle}>{day.mobileTitle ? <><span className={s.desktop}>{day.title}</span><span className={s.mobile}>{day.mobileTitle}</span></> : day.title}</span><Asset name="2163-2995-imgIcon" className={expanded.includes(i) ? s.chevronOpen : s.chevron} /></button></h3>
       <div id={`day-${i}`} hidden={!expanded.includes(i)} className={s.dayBody}>{day.description ? <DayText text={day.description} /> : <MissingDetail onEnquire={enquire} />}</div>
     </div>)}</div>
