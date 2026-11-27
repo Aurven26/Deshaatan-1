@@ -659,3 +659,20 @@
   .mobileBarBottom > a.callContact { background: #f2f4f7; }
   .mobileBarBottom > a.callContact svg { width: 20px; height: 20px; fill: none; stroke: #10213a; stroke-width: 1.8; stroke-linejoin: round; }
 }
+
+/* Itinerary route: a line fills down the days as they are read; each day's dot lights up when reached */
+.days { position: relative; padding-left: 30px; }
+.days::before, .days::after { content: ""; position: absolute; left: 9px; top: 22px; bottom: 22px; width: 2px; border-radius: 2px; }
+.days::before { background: #e6e8ec; }
+.days::after { background: #ef6a2e; transform-origin: top; transform: scaleY(var(--route, 0)); }
+.day { position: relative; overflow: visible; }
+.day::before { content: ""; position: absolute; z-index: 1; left: -26px; top: 36px; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid #c9ced6; transition: background .3s, border-color .3s, transform .3s; }
+.day[data-passed="true"]::before { background: #ef6a2e; border-color: #ef6a2e; transform: scale(1.15); }
+.day h3 > button { border-radius: 12px; }
+.endTripWrap { display: block; }
+@media (max-width: 700px) {
+  .days { padding-left: 22px; }
+  .days::before, .days::after { left: 6px; top: 16px; bottom: 16px; }
+  .day::before { left: -21px; top: 23px; width: 9px; height: 9px; }
+}
+@media (prefers-reduced-motion: reduce) { .days::after { transform: scaleY(1); } .day::before { transition: none; } }
