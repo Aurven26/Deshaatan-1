@@ -16,5 +16,5 @@ export async function pageMetadata(slug:string):Promise<Metadata>{
   const seo=doc.seo;
   const image=mediaURL(seo?.image);
   const robots=seo?.robots||(seo?.noIndex?'noindex-follow':'index-follow');
-  return {metadataBase:new URL(process.env.NEXT_PUBLIC_SERVER_URL||'http://127.0.0.1:3000'),title:seo?.title||`${doc.title} | Deshaatan`,description:seo?.description||undefined,keywords:seo?.keywords?.split(',').map(word=>word.trim()).filter(Boolean),robots:{index:robots.startsWith('index-'),follow:robots.endsWith('-follow')},alternates:{canonical:seo?.canonicalURL||`/${doc.slug}`,languages:Object.fromEntries((seo?.hreflang||[]).map(item=>[item.language,item.url]))},...(image?{openGraph:{images:[image]}}:{})};
+  return {metadataBase:new URL(process.env.NEXT_PUBLIC_SERVER_URL||'https://www.deshaatan.com'),title:seo?.title||`${doc.title} | Deshaatan`,description:seo?.description||undefined,keywords:seo?.keywords?.split(',').map(word=>word.trim()).filter(Boolean),robots:{index:robots.startsWith('index-'),follow:robots.endsWith('-follow')},alternates:{canonical:seo?.canonicalURL||`/${doc.slug}`,languages:Object.fromEntries((seo?.hreflang||[]).map(item=>[item.language,item.url]))},...(image?{openGraph:{images:[image]}}:{})};
 }

@@ -73,6 +73,8 @@ function EnquiryForm({ title, message, onReady }: { title: string; message: stri
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if(pending)return;
+    const travellerButton = event.currentTarget.querySelector<HTMLButtonElement>('button[aria-haspopup="dialog"][data-empty]');
+    if(travellerButton?.dataset.empty === 'true'){onReady('Please choose the number of travellers.');travellerButton.focus();return;}
     const values = new FormData(event.currentTarget);
     setPending(true);
     try{const response=await fetch('/api/callback-requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...Object.fromEntries(values),title})});const result=await response.json();if(!response.ok)throw new Error(result.error || 'Please try again.');onReady('Your enquiry has been submitted successfully.');}
@@ -93,6 +95,12 @@ function EnquiryForm({ title, message, onReady }: { title: string; message: stri
   </form>;
 }
 
+function DayText({ text }: { text: string }) {
+  const match = text.match(/^([\s\S]*?)\s*Overnight stay:\s*(.+?)\.?\s*$/);
+  if (!match) return <p>{text}</p>;
+  return <><p>{match[1]}</p><p className={s.overnight}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18v-6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6M3 18h18M3 18v2M21 18v2M7 9V6h10v3" /></svg><span>Overnight stay: <strong>{match[2]}</strong></span></p></>;
+}
+
 function Itinerary({ tour, enquire }: { tour: Tour; enquire:()=>void }) {
   const [expanded, setExpanded] = useState<number[]>([]);
   useEffect(() => { if (window.matchMedia("(min-width: 701px)").matches) setExpanded([0]); }, []);
@@ -101,7 +109,7 @@ function Itinerary({ tour, enquire }: { tour: Tour; enquire:()=>void }) {
     <Heading action={<button className={s.expandAll} onClick={() => setExpanded(allExpanded ? [] : tour.days.map((_, i) => i))}>{allExpanded ? "Collapse All" : "Expand All"}</button>}>Itinerary</Heading>
     <div className={s.days}>{tour.days.map((day, i) => <div className={`${s.day} ${day.desktopOnly ? s.desktop : ""}`} key={`${day.day}-${i}`}>
       <h3><button aria-expanded={expanded.includes(i)} aria-controls={`day-${i}`} onClick={() => setExpanded(current => current.includes(i) ? current.filter(n => n !== i) : [...current, i])}><span className={s.dayNumber}>DAY {day.day}</span><span className={s.dayTitle}>{day.mobileTitle ? <><span className={s.desktop}>{day.title}</span><span className={s.mobile}>{day.mobileTitle}</span></> : day.title}</span><Asset name="2163-2995-imgIcon" className={expanded.includes(i) ? s.chevronOpen : s.chevron} /></button></h3>
-      <div id={`day-${i}`} hidden={!expanded.includes(i)} className={s.dayBody}>{day.description ? <p>{day.description}</p> : <MissingDetail onEnquire={enquire} />}</div>
+      <div id={`day-${i}`} hidden={!expanded.includes(i)} className={s.dayBody}>{day.description ? <DayText text={day.description} /> : <MissingDetail onEnquire={enquire} />}</div>
     </div>)}</div>
     <Asset name="2032-4182-imgImageEndOfTrip" className={s.endTrip} />
   </section>;
@@ -111,12 +119,17 @@ function Checklist({ items, excluded = false }: { items: string[]; excluded?: bo
   return <ul className={s.checklist}>{items.map(item => <li key={item}><Asset name={excluded ? "2163-2994-imgIcon13" : "2163-2994-imgIcon"} /><span>{item}</span></li>)}</ul>;
 }
 
+function formatDate(value: string) {
+  const date = new Date(value.replace(/\./g, "-"));
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString("en-IN", {day: "numeric", month: "short", year: "numeric"});
+}
+
 function ReviewCard({ review, index }: { review: Tour["reviews"][number]; index: number }) {
   const [expanded, setExpanded] = useState(false);
   const [useful, setUseful] = useState(false);
   return <article className={s.reviewCard}>
     <div className={s.reviewer}><strong>{review.name}</strong><span>BEST</span></div>
-    <div className={s.reviewMeta}>{review.rating >= 4 ? <img className={s.reviewStars} src={`/figma/itinerary/review-stars-${review.rating}.png`} alt={`${review.rating} out of 5 stars`} /> : <Stars rating={review.rating} />}<time>{review.date}</time></div>
+    <div className={s.reviewMeta}>{review.rating >= 4 ? <img className={s.reviewStars} src={`/figma/itinerary/review-stars-${review.rating}.png`} alt={`${review.rating} out of 5 stars`} /> : <Stars rating={review.rating} />}<time>{formatDate(review.date)}</time></div>
     <p className={expanded ? s.reviewFull : s.reviewExcerpt} id={`review-${index}`}>{review.text}</p>
     <button className={s.seeMore} aria-expanded={expanded} aria-controls={`review-${index}`} onClick={() => setExpanded(!expanded)}>{expanded ? "See less" : "See more"}</button>
     <div className={s.reviewActions}><button aria-pressed={useful} onClick={() => setUseful(!useful)}><img src="/figma/itinerary/useful.png" alt="" />It&apos;s useful! · {useful ? 1 : 0}</button><button className={s.reviewMore} aria-label={`${expanded ? "Collapse" : "Read full"} review from ${review.name}`} aria-expanded={expanded} aria-controls={`review-${index}`} onClick={() => setExpanded(!expanded)}><Asset name="2146-3115-imgIcon2" /></button></div>
@@ -204,13 +217,13 @@ export default function TourDetail({ tour }: { tour: Tour }) {
     <a className="skip-link" href="#tour-content">Skip to itinerary</a>
     <SiteHeader onAction={(kind, title) => setModal({kind, title})} />
     <main id="tour-content" className={s.container}>
-      {isVisible("introduction") && <nav className={s.breadcrumb} aria-label="Breadcrumb"><Link href="/">Home</Link><span>〉</span><Link href="/#destinations">India Tours</Link><span>〉</span><span>{tour.title}</span></nav>}
+      {isVisible("introduction") && <nav className={s.breadcrumb} aria-label="Breadcrumb"><Link href="/">Home</Link><span>〉</span><Link href="/tour-packages">India Tours</Link><span>〉</span><span>{tour.title}</span></nav>}
       {isVisible("introduction") && <h1 className={s.title}>{tour.title}</h1>}
       {isVisible("introduction") && <div className={s.titleMeta}>{isVisible("reviews") && reviewCount>0 && <a className={s.rating} href="#reviews"><strong>{reviewCount?average.toFixed(1):"New"}</strong><Stars rating={average} /><span>({reviewCount} reviews)</span></a>}<p className={s.duration}>{tour.duration ?? 12} days {startCity && <><span>•</span> {startCity === endCity ? <>Start and end in <strong>{startCity}</strong></> : <>Start in <strong>{startCity}</strong> · End in <strong>{endCity}</strong></>}</>}</p><div className={s.titleActions}><ShareMenu title={tour.title} icon="/figma/itinerary/share.svg" inline href={`/tours/${tour.slug}`} onCopy={share} /><button aria-pressed={saved} onClick={save}><img src="/figma/itinerary/heart.svg" alt="" />{saved ? "Saved" : "Save"}</button></div></div>}
       <div className={s.topGrid} style={!isVisible("gallery")||!isVisible("enquiry")?{gridTemplateColumns:"minmax(0,1fr)"}:undefined}>{isVisible("gallery") && <div className={s.gallery}>
         <button className={s.mainPhoto} onClick={() => {setGalleryIndex(0); setDialog("gallery");}} aria-label={`Open ${tour.title} photo gallery`}><Image src={photos[0]} alt={tour.title} fill priority quality={90} sizes="(max-width: 700px) 440px, (max-width: 1100px) 65vw, 634px" /></button>
         <div className={s.gallerySide}>{photos.length>1 && <button className={s.secondaryPhoto} onClick={() => {setGalleryIndex(1);setDialog("gallery");}} aria-label="View all tour photos"><Image src={photos[1]} alt={tour.title} fill quality={90} sizes="(max-width: 700px) 222px, 340px" /><span><Asset name="2032-4167-imgClarityImageGalleryLine" />View all</span></button>}
-          {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {tour.reviews[0].date}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{"★".repeat(Math.max(1,Math.min(5,tour.reviews[0].rating)))}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
+          {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {formatDate(tour.reviews[0].date)}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{"★".repeat(Math.max(1,Math.min(5,tour.reviews[0].rating)))}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
         </div>
       </div>}{isVisible("enquiry") && <EnquiryForm title={tour.title} message={message} onReady={setNotice} />}</div>
       <div className={s.contentColumn} data-tour-content>
@@ -230,7 +243,7 @@ export default function TourDetail({ tour }: { tour: Tour }) {
           <div className={s.relatedArrows}><img src="/figma/itinerary/related-arrows.svg" alt="" /><button aria-label="Previous related destinations" onClick={() => relatedRef.current?.scrollBy({left:-371, behavior:"smooth"})} /><button aria-label="Next related destinations" onClick={() => relatedRef.current?.scrollBy({left:371, behavior:"smooth"})} /></div>
         </div>
         <div className={s.relatedCards} ref={relatedRef} aria-live="polite">{related.map(({title, days, price, previousPrice, id, image, href}) => <article key={id}>
-          <div className={s.relatedMedia}><Link className={s.relatedPhoto} href={href || `/tours/${id}`}><Image src={image.startsWith("/")||image.startsWith("http")?image:`/figma/packages/${image}`} alt={title} width={336} height={336} quality={90} sizes="(max-width: 700px) 270px, 336px" /></Link><ShareMenu title={title} icon="imgShare2" onCopy={async name => {try {await navigator.clipboard.writeText(`${name} — ${window.location.origin}/#destinations`);setNotice("Package link copied.");} catch {setNotice("You can share this page using the address in your browser.");}}} /></div>
+          <div className={s.relatedMedia}><Link className={s.relatedPhoto} href={href || `/tours/${id}`} aria-label={title}><Image src={image.startsWith("/")||image.startsWith("http")?image:`/figma/packages/${image}`} alt={title} width={336} height={336} quality={90} sizes="(max-width: 700px) 270px, 336px" /></Link><ShareMenu title={title} icon="imgShare2" onCopy={async name => {try {await navigator.clipboard.writeText(`${name} — ${window.location.origin}${href || `/tours/${id}`}`);setNotice("Package link copied.");} catch {setNotice("You can share this page using the address in your browser.");}}} /></div>
           <div className={s.relatedMeta}><span>{days - 1}N / {days}D</span></div>
           <h3><Link href={href || `/tours/${id}`}>{title}</Link></h3>
           <div className={s.relatedPrice}><div>{previousPrice > price && <del>₹{previousPrice.toLocaleString("en-IN")}</del>}<p><strong>₹{price.toLocaleString("en-IN")}</strong><small>for 2 people</small></p></div><button onClick={() => {setModal({kind:"enquiry",title});}}>Get a callback</button></div>

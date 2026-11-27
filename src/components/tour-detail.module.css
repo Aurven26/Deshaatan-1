@@ -565,3 +565,51 @@
   .mobileBarBottom > a.callContact { background: #fff0e8; }
   .mobileEnquire { flex: 0 0 auto; min-width: 0; min-height: 44px; padding: 10px 16px; font-size: 14px; background: #ef6a2e; border-color: #ef6a2e; border-radius: 12px; }
 }
+
+/* ---- Readability pass: nothing below 12px, body text meets 4.5:1 ---- */
+.field > span, .compactField > span { font-size: 12.5px; line-height: 18px; color: #4b5565; }
+.compactField .datePlaceholder, .travellerToggle[data-empty=true] { color: #5b6577; }
+.compactField .datePlaceholder { font-size: 14px; }
+.expandAll { color: #c4501c; border-color: #c4501c; }
+.writeReviewButton { color: #c4501c; border-color: #ef6a2e; }
+.reviewMeta time, .seeMore { color: #5b6577; font-size: 14px; }
+.reviewActions button { font-size: 13px; color: #4b5565; }
+.policies p, .checklist li, .overviewCopy, .highlights li { color: #3f4a59; }
+.relatedPrice button { color: #c4501c; border-color: #ef6a2e; }
+.relatedPrice del { color: #b3401a; }
+.histogram > div:first-child b, .fullBar { background: #ef6a2e; }
+.histogram b { background: #5b6577; }
+.histogram > div:last-child b, .histogram > div:last-child .emptyBar { background: #8a93a3; }
+.linkButton, .missingDetail button, .reviewActions button[aria-pressed=true], .infoDialog a { color: #c4501c; }
+.reviewer span { display: none; }
+
+/* Itinerary: overnight stay on its own line */
+.dayBody .overnight { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; color: #10213a; }
+.dayBody .overnight svg { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: #ef6a2e; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Floating bar: solid, so text behind it never shows through */
+.desktopBar { background: #10213a; backdrop-filter: none; border-color: #10213a; box-shadow: 0 10px 30px rgba(16,33,58,.3); }
+.desktopBar nav a { color: #c9d1de; }
+.desktopBar nav a[aria-current] { color: #fff; }
+
+/* Reviews on desktop: a grid that fits, no half-cut cards */
+@media (min-width: 701px) {
+  .reviewCards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; }
+  .reviewCards:not(.allReviews) > :nth-child(n+4) { display: none; }
+  .reviewCard { width: auto; min-height: 0; }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .reviewCards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reviewCards:not(.allReviews) > :nth-child(n+3) { display: none; }
+}
+
+@media (max-width: 700px) {
+  .field > span, .compactField > span { font-size: 12px; }
+  .compactField .datePlaceholder, .compactField input, .compactField select { font-size: 14px; }
+  .overviewCopy, .highlights li { font-size: 15px; line-height: 24px; color: #3f4a59; }
+  .checklist li, .policies p, .dayBody p { font-size: 14px; line-height: 22px; }
+  .reviewMeta time, .seeMore { font-size: 12px; }
+  .reviewActions button { font-size: 12px; }
+  .expandAll { font-size: 13px; color: #c4501c; }
+  .tabs a { font-size: 13px; }
+}
