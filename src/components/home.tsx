@@ -9,6 +9,7 @@ import {type Trip} from "@/data/travel-catalog";
 import HomepageMotion from "./homepage-motion";
 import { TextReveal } from "./text-reveal";
 import HomeBanners from "./home-banners";
+import { PackageCard } from "./package-card";
 import {useCMSContent} from './cms-content';
 import { matchesTripDuration } from "./duration-tabs";
 import s from "./home.module.css";
@@ -44,15 +45,6 @@ function Chips({ labels, value, onChange, label }: { labels: string[]; value: nu
   </div>;
 }
 
-function PackageCard({ trip, enquire }: { trip: Trip; enquire: (title: string) => void }) {
-  const {homePage:{popular:p}}=useCMSContent();
-  const photo = <Image src={trip.image} alt={trip.title} width={604} height={480} sizes="(max-width: 600px) 260px, (max-width: 1000px) 45vw, 302px" quality={90} loading="lazy" />;
-  return <article className={s.card}>
-    {trip.href ? <Link className={s.photo} href={trip.href} aria-label={`View ${trip.title}`}>{photo}{trip.days ? <span className={s.badge}>{trip.days - 1}N / {trip.days}D</span> : null}</Link> : <div className={s.photo}>{photo}</div>}
-    {trip.href ? <Link className={s.title} href={trip.href}>{trip.title}</Link> : <button className={s.title} onClick={() => enquire(trip.title)}>{trip.title}</button>}
-    <div className={s.priceRow}><div className={s.price}><strong>₹{(trip.price ?? 0).toLocaleString("en-IN")}</strong><span>{p.perPerson}</span></div><button type="button" className={s.callback} onClick={() => enquire(trip.title)}>{p.callbackLabel}</button></div>
-  </article>;
-}
 
 const star = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5L2.5 9.4l6.6-.8z" /></svg>;
 const chipArrow = <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 8 8 2M3.5 2H8v4.5" /></svg>;
