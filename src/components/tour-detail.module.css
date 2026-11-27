@@ -615,3 +615,18 @@
 .formNote { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: -2px; font-size: 12px; color: #5b6577; text-align: center; }
 .formNote svg { width: 14px; height: 14px; flex-shrink: 0; fill: none; stroke: #2e9b5a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .relatedTrack { margin-top: 24px; }
+
+/* Mobile polish: read the trip first, enquire from the bottom bar or after the content */
+@media (max-width: 700px) {
+  .breadcrumb > span:nth-last-child(-n+2) { display: none; }
+  .breadcrumb { padding-top: 14px; }
+  .container { display: flex; flex-direction: column; }
+  .container > .topGrid { display: contents; }
+  .container > .topGrid > .gallery { order: 0; }
+  .container > .contentColumn { order: 1; }
+  .container > .topGrid > .enquiry { order: 2; margin: 8px 0 32px; scroll-margin-top: 80px; }
+  .container > .related, .container > .cityLinks, .container > .mobileRelated { order: 3; }
+  .tabs { position: sticky; top: 62px; z-index: 20; background: #fff; margin-top: 20px; }
+  .tabs a { font-size: 13px; font-weight: 600; color: #5b6577; }
+  .tabs a[aria-current] { color: #10213a; background: none; border-bottom: 2px solid #ef6a2e; }
+}
