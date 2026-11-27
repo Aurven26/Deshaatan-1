@@ -788,3 +788,43 @@
 /* Top rating uses the same star artwork as the review cards */
 .ratingStars { width: 84px; height: 14px; object-fit: contain; }
 @media (max-width: 700px) { .ratingStars { width: 72px; height: 12px; } }
+
+/* ---- Pass 7: tab strip as a clean sticky sub-header ---- */
+@media (min-width: 701px) {
+  /* a white band behind the strip hides content scrolling between it and the header */
+  .tabs { top: 84px; box-shadow: 0 -12px 0 6px #fff, 0 8px 20px rgba(16,33,58,.07); border-color: #e7eaef; background: #fff; backdrop-filter: none; }
+  .tabs a { flex: 1 1 auto; justify-content: center; }
+}
+@media (min-width: 701px) and (max-width: 1000px) { .tabs { top: 76px; } .tabs a { padding: 9px 10px; font-size: 13.5px; } }
+/* a small orange accent under the active pill */
+.tabs::after { content: ""; position: absolute; z-index: 1; bottom: 1px; left: 0; width: 18px; height: 3px; border-radius: 3px; background: #ef6a2e; transform: translateX(calc(var(--pill-x, 0px) + var(--pill-w, 0px) / 2 - 9px)); opacity: 0; transition: transform .35s cubic-bezier(.22,1,.36,1), opacity .2s; }
+.tabs[data-ready="true"]::after { opacity: 1; }
+.tabs a[aria-current] svg { opacity: 1; stroke: #ffb48f; }
+@media (prefers-reduced-motion: reduce) { .tabs::after { transition: none; } }
+
+/* ---- Pass 7: FAQ chevrons in brand navy, inside a soft round badge ---- */
+.faqChevron { box-sizing: content-box; width: 20px; height: 20px; padding: 4px; border-radius: 50%; background: #fff; border: 1px solid #e3e7ec; transition: transform .25s ease, background .2s; }
+.faqList details[open] { border-color: #f3d4c4; background: #fffaf7; }
+.faqList details[open] .faqChevron { background: #10213a; filter: brightness(0) invert(1); border-color: #10213a; }
+@media (max-width: 700px) { .faqChevron { width: 16px; height: 16px; padding: 3px; } }
+
+/* ---- Pass 7: a shorter enquiry form on laptops ---- */
+@media (min-width: 701px) {
+  .formHead { padding: 14px 18px 12px; }
+  .enquiry .formHead h2 { font-size: 18px; line-height: 24px; }
+  .formHead > p { margin-top: 2px; font-size: 12.5px; line-height: 18px; }
+  .formPrice { margin-top: 8px; }
+  .formPrice strong { font-size: 20px; }
+  .formBody { gap: 8px; padding: 12px 14px 12px; }
+  .formBody .field { min-height: 46px; padding: 2px 12px 3px; }
+  .formBody .field > span { font-size: 11.5px; line-height: 17px; }
+  .formBody .field input { height: 22px; font-size: 14px; }
+  .formBody .country, .formBody .compactField { min-height: 46px; }
+  .formBody .compactField input, .formBody .compactField select, .formBody .travellerToggle { min-height: 44px; height: 44px; padding-top: 0; padding-bottom: 0; }
+  .formBody .phoneRow { gap: 8px; grid-template-columns: 76px 1fr; }
+  .formBody .messageField textarea { min-height: 44px; height: 44px; padding: 11px 12px; }
+  .formBody .orangeButton { margin-top: 2px; min-height: 46px; font-size: 15.5px; }
+  .formWhatsapp { min-height: 30px; font-size: 13px; }
+}
+/* short laptop screens: drop the helper line so the whole form fits */
+@media (min-width: 701px) and (max-height: 800px) { .formHead > p { display: none; } }

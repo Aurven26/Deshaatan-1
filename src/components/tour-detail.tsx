@@ -109,7 +109,7 @@ function EnquiryForm({ title, message, onReady, price }: { title: string; messag
         <TravelDateField />
         <TravellerCountField />
       </div>
-      <label className={s.messageField}><span className={s.srOnly}>Message</span><textarea name="message" placeholder="Anything we should know? Hotels, pace, special occasions (optional)" key={message} defaultValue={message} /></label>
+      <label className={s.messageField}><span className={s.srOnly}>Message</span><textarea name="message" placeholder="Anything else we should know? (optional)" key={message} defaultValue={message} /></label>
       <button className={s.orangeButton} type="submit" disabled={pending} aria-busy={pending}>{pending ? 'Sending…' : 'Get my free quote'} <img className={s.enquiryArrow} src="/figma/itinerary/enquiry-chevron.svg" alt="" /></button>
       <a className={s.formWhatsapp} href="https://wa.me/917065780780?text=Hello%20Deshaatan%2C%20I%20would%20like%20to%20plan%20a%20trip." target="_blank" rel="noreferrer"><img src="/figma/itinerary/mobile-enquiry-whatsapp.svg" alt="" />Prefer WhatsApp? Chat with us</a>
     </div>
