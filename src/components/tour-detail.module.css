@@ -645,3 +645,4 @@
   .reviewCards { padding-top: 20px; }
   .page > :global(.site-footer) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
 }
+@media (max-width: 700px) { .container > .topGrid > .gallery { margin-top: 16px; } .titleMeta { padding-bottom: 4px; } }
