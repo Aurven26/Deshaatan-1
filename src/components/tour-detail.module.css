@@ -646,3 +646,8 @@
   .page > :global(.site-footer) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
 }
 @media (max-width: 700px) { .container > .topGrid > .gallery { margin-top: 16px; } .titleMeta { padding-bottom: 4px; } }
+/* Mobile: no inline enquiry form (the bottom bar opens it), no dead space under the footer */
+@media (max-width: 700px) {
+  .container > .topGrid > .enquiry { display: none; }
+  .page > :global(.site-footer) { padding-bottom: 0; }
+}

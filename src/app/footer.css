@@ -58,7 +58,7 @@
  .site-footer .footer-social>div{display:flex;gap:12px}
  .site-footer .footer-social button{width:40px;height:40px;padding:8px;transform:none}
  .site-footer .footer-social img{width:24px;height:24px}
- .site-footer .mobile-footer-bottom{margin:0 24px;padding:24px 0 70px;min-height:178px;border-top:1px solid white;font:14px/21px Helvetica,Arial,sans-serif;color:#323637}
+ .site-footer .mobile-footer-bottom{margin:0 24px;padding:24px 0 calc(28px + env(safe-area-inset-bottom));min-height:0;border-top:1px solid white;font:14px/21px Helvetica,Arial,sans-serif;color:#323637}
  .site-footer .mobile-footer-bottom>p{margin-bottom:16px;white-space:normal}
  .site-footer .mobile-footer-bottom>div{display:flex;flex-wrap:wrap;gap:0}
  .site-footer .mobile-footer-bottom a+a::before{content:"•";margin:0 8px}
