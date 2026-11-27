@@ -613,3 +613,13 @@
   .expandAll { font-size: 13px; color: #c4501c; }
   .tabs a { font-size: 13px; }
 }
+@media (max-width: 700px) {
+  .breadcrumb { font-size: 12px; }
+  .rating span, .secondaryPhoto > span { font-size: 12px; }
+  .dayNumber { font-size: 12px; }
+  .score small { font-size: 12px; }
+  .histogram b { font-size: 11px; }
+  .googleReviews a { font-size: 13px; }
+  .relatedPrice del { font-size: 12px; }
+  .mobilePrice span { font-size: 12px; }
+}
