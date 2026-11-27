@@ -512,3 +512,56 @@
   .page *, .page *::before, .page *::after { animation:none!important; transition:none!important; }
   .phonePath { stroke-dasharray:1 1; visibility:visible; }
 }
+
+/* ---- Nov 2026 pass: one typeface, Deshaatan orange/navy, homepage grid ---- */
+.page, .page :where(*:not(svg):not(path)) { font-family: var(--jakarta) !important; }
+.page { --purple: #ef6a2e; }
+.container { max-width: 1280px; width: calc(100% - 64px); }
+.calendarDays button[aria-pressed=true] { background: #ef6a2e; }
+.tabs a[aria-current] { background: #10213a; }
+.sectionHeading h2::after { background: #ef6a2e; }
+.dayNumber { background: #fff0e8; color: #c4501c; }
+.quote { background: #fff4ec; }
+.blueStars { color: #ffc14b; font-size: 14px; letter-spacing: 2px; }
+.relatedPhoto { display: block; }
+.relatedCards { gap: 24px; }
+.relatedCards article { width: 302px; }
+.relatedCards h3 a:hover { color: #ef6a2e; }
+.relatedMeta span { font-size: 13px; font-weight: 600; color: #5b6577; }
+.relatedPrice strong { font-size: 22px; color: #10213a; }
+.relatedPrice small { display: block; padding: 2px 0 0; font-size: 12px; }
+.relatedPrice button { width: auto; height: auto; padding: 9px 14px; border: 1.5px solid #ef6a2e; border-radius: 999px; color: #ef6a2e; font-size: 13px; font-weight: 600; transition: background .2s, color .2s; }
+.relatedPrice button:hover { background: #ef6a2e; color: #fff; }
+/* The floating bar spans the content column only, not the enquiry column or the footer */
+@media (min-width: 1101px) {
+  .floating { left: max(32px, calc((100% - 1280px) / 2)); width: calc(min(1280px, 100% - 64px) - 390px); transform: translateY(140%); }
+  .floatingVisible { transform: translateY(0); }
+  .desktopBar { gap: 12px; padding: 10px 12px 10px 20px; min-height: 72px; }
+  .desktopBar nav { gap: 0; padding-right: 12px; }
+  .desktopBar nav img { display: none; }
+  .desktopBar nav a { font-size: 14px; padding: 8px 8px; }
+  .floatingPrice strong { font-size: 20px; }
+  .floatingPrice span, .floatingPrice small { font-size: 12px; line-height: 16px; }
+  .desktopBar .orangeButton { width: auto; min-height: 48px; padding: 10px 20px; font-size: 15px; }
+}
+@media (max-width: 700px) {
+  .container { width: calc(100% - 32px); }
+  /* Gallery: one photo per swipe with a visible peek, so it reads as a carousel */
+  .gallery { width: calc(100% + 16px); height: 260px; gap: 10px; padding-right: 16px; }
+  .mainPhoto { flex: 0 0 calc(100% - 40px); border-radius: 16px; }
+  .gallerySide { flex: 0 0 calc(100% - 40px); grid-template-rows: 1fr; }
+  .secondaryPhoto { border-radius: 16px; }
+  .gallerySide .quote { display: none; }
+  .secondaryPhoto > span { font-size: 11px; padding: 6px 10px; }
+  /* Bottom bar: one compact row */
+  .mobileBar { padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); border-radius: 16px 16px 0 0; }
+  .mobileBarBottom { border-top: 0; margin: 0; padding: 0; gap: 8px; }
+  .mobilePrice { flex: 1 1 auto; }
+  .mobilePrice strong { display: block; font-size: 17px; line-height: 22px; color: #10213a; }
+  .mobilePrice span { display: block; font-size: 11px; line-height: 14px; }
+  .mobileBarBottom > a { width: 40px; height: 40px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; }
+  .mobileBarBottom > a img { width: 22px; height: 22px; object-fit: contain; }
+  .mobileBarBottom > a.whatsappContact { background: #effaf0; }
+  .mobileBarBottom > a.callContact { background: #fff0e8; }
+  .mobileEnquire { flex: 0 0 auto; min-width: 0; min-height: 44px; padding: 10px 16px; font-size: 14px; background: #ef6a2e; border-color: #ef6a2e; border-radius: 12px; }
+}
