@@ -57,9 +57,18 @@ export default function TourMotion() {
         }
       }
     };
+    // The sticky enquiry form must stop where the trip content ends, never slide over Related trips.
+    const pinForm = () => {
+      const form = document.querySelector<HTMLElement>("#enquiry");
+      const content = document.querySelector<HTMLElement>("[data-tour-content]");
+      if (!form || !content || getComputedStyle(form).position !== "sticky") { form?.style.removeProperty("translate"); return; }
+      const overflow = content.getBoundingClientRect().bottom - (96 + form.offsetHeight);
+      form.style.translate = overflow < 0 ? `0 ${Math.round(overflow)}px` : "";
+    };
     const tick = () => {
       frame = 0;
       measure();
+      pinForm();
       const ease = still.matches ? 1 : 0.18;
       page += (pageTarget - page) * ease;
       route += (routeTarget - route) * ease;
