@@ -63,4 +63,10 @@
  .site-footer .mobile-footer-bottom>div{display:flex;flex-wrap:wrap;gap:0}
  .site-footer .mobile-footer-bottom a+a::before{content:"•";margin:0 8px}
  .site-footer .mobile-footer-bottom a:last-child{flex-basis:100%;text-align:left}
+
+ .site-footer .mobile-footer-menu details{border-bottom:1px solid #dfe2e6}
+ .site-footer .mobile-footer-menu summary{min-height:50px;font-size:15px;font-weight:600;color:#2b2f33}
+ .site-footer .footer-divider{display:none}
+ .site-footer .footer-social h3{font-size:15px;margin-top:6px}
+ .site-footer .mobile-footer-bottom{border-top:1px solid #dfe2e6;font-family:var(--jakarta);font-size:13px}
 }
