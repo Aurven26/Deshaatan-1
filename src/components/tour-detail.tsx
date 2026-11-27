@@ -188,7 +188,8 @@ export default function TourDetail({ tour }: { tour: Tour }) {
       scheduled = false;
       const overviewTop = overviewRef.current?.getBoundingClientRect().top ?? Infinity;
       const contentBottom = document.querySelector("[data-tour-content]")?.getBoundingClientRect().bottom ?? Infinity;
-      setFloating(overviewTop <= 160 && contentBottom > window.innerHeight - 120);
+      const onPhone = window.matchMedia("(max-width: 700px)").matches;
+      setFloating((onPhone || overviewTop <= 160) && contentBottom > window.innerHeight - 120);
       let current = "overview";
       for (const label of sections) { const element = document.getElementById(sectionId(label)); if (element && element.getBoundingClientRect().top <= 210) current = sectionId(label); }
       setActive(current);
@@ -223,7 +224,7 @@ export default function TourDetail({ tour }: { tour: Tour }) {
       {isVisible("introduction") && <h1 className={s.title}>{tour.title}</h1>}
       {isVisible("introduction") && <div className={s.titleMeta}>{isVisible("reviews") && reviewCount>0 && <a className={s.rating} href="#reviews"><strong>{reviewCount?average.toFixed(1):"New"}</strong><Stars rating={average} /><span>({reviewCount} reviews)</span></a>}<p className={s.duration}>{tour.duration ?? 12} days {startCity && <><span>•</span> {startCity === endCity ? <>Start and end in <strong>{startCity}</strong></> : <>Start in <strong>{startCity}</strong> · End in <strong>{endCity}</strong></>}</>}</p><div className={s.titleActions}><ShareMenu title={tour.title} icon="/figma/itinerary/share.svg" inline href={`/tours/${tour.slug}`} onCopy={share} /><button aria-pressed={saved} onClick={save}><img src="/figma/itinerary/heart.svg" alt="" />{saved ? "Saved" : "Save"}</button></div></div>}
       <div className={s.topGrid} style={!isVisible("gallery")||!isVisible("enquiry")?{gridTemplateColumns:"minmax(0,1fr)"}:undefined}>{isVisible("gallery") && <div className={s.gallery}>
-        <button className={s.mainPhoto} onClick={() => {setGalleryIndex(0); setDialog("gallery");}} aria-label={`Open ${tour.title} photo gallery`}><Image src={photos[0]} alt={tour.title} fill priority quality={90} sizes="(max-width: 700px) 440px, (max-width: 1100px) 65vw, 634px" /></button>
+        <button className={s.mainPhoto} onClick={() => {setGalleryIndex(0); setDialog("gallery");}} aria-label={`Open ${tour.title} photo gallery`}><Image src={photos[0]} alt={tour.title} fill priority quality={90} sizes="(max-width: 700px) 440px, (max-width: 1100px) 65vw, 634px" />{photos.length>1 && <span className={s.photoCount}><Asset name="2032-4167-imgClarityImageGalleryLine" />{photos.length} photos</span>}</button>
         <div className={s.gallerySide}>{photos.length>1 && <button className={s.secondaryPhoto} onClick={() => {setGalleryIndex(1);setDialog("gallery");}} aria-label="View all tour photos"><Image src={photos[1]} alt={tour.title} fill quality={90} sizes="(max-width: 700px) 222px, 340px" /><span><Asset name="2032-4167-imgClarityImageGalleryLine" />View all</span></button>}
           {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {formatDate(tour.reviews[0].date)}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{Array.from({length: tour.reviews[0].rating}, (_, i) => <Asset key={i} name="2032-4282-imgIcon" />)}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
         </div>
