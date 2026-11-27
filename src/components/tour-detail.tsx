@@ -68,7 +68,7 @@ function TravelDateField() {
   </div>;
 }
 
-function EnquiryForm({ title, message, onReady }: { title: string; message: string; onReady: (text: string) => void }) {
+function EnquiryForm({ title, message, onReady, price }: { title: string; message: string; price?: string; onReady: (text: string) => void }) {
   const [pending,setPending]=useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -80,6 +80,7 @@ function EnquiryForm({ title, message, onReady }: { title: string; message: stri
     finally{setPending(false);}
   }
   return <form id="enquiry" className={s.enquiry} onSubmit={submit}>
+    {price && <div className={s.formPrice}><strong>₹{price}</strong><span>for 2 people · excluding taxes</span></div>}
     <h2>Fill Enquiry Form Below!</h2>
     <label className={s.field}><span>Full Name <b>*</b></span><input name="name" autoComplete="name" placeholder="Your full name" required /></label>
     <label className={s.field}><span>Email <b>*</b></span><input name="email" type="email" autoComplete="email" placeholder="Your email address" required /></label>
@@ -123,16 +124,16 @@ function ReviewCard({ review, index }: { review: Tour["reviews"][number]; index:
   </article>;
 }
 
-function FloatingEnquiry({ visible, active, price, enquire, labels }: {labels:string[]; visible: boolean; active: string; price: string; enquire: (customize?: boolean) => void }) {
+function FloatingEnquiry({ visible, active, price, enquire, labels, whatsapp }: {labels:string[]; visible: boolean; active: string; price: string; whatsapp: string; enquire: (customize?: boolean) => void }) {
   const icons = ["imgIcon", "imgIcon1", "imgIcon2", "imgIcon3", "imgGroup1171275185"];
   return <aside className={`${s.floating} ${visible ? s.floatingVisible : ""}`} aria-label="Trip enquiry" inert={!visible}>
-    <div className={s.desktopBar}><nav aria-label="Quick trip sections">{labels.map((label) => <a key={label} href={`#${sectionId(label)}`} aria-current={active === sectionId(label) ? "location" : undefined}><Asset name={`2179-3658-${icons[["Overview","Itinerary","Inclusions","Reviews","FAQs"].indexOf(label)]}`} />{label === "FAQs" ? "FAQ’s" : label}</a>)}</nav><div className={s.floatingPrice}><div><strong>₹{price}</strong><span> / person</span></div><small>Excluding Applicable Taxes</small></div><button className={s.orangeButton} onClick={() => enquire()}>Send Enquiry</button></div>
-    <div className={s.mobileBar}><div className={s.mobileBarTop}><div><p>Want to change this trip?</p><small>Our travel expert can help</small></div><a className={s.whatsappContact} href="https://wa.me/?text=Hello%20Deshaatan%2C%20I%20would%20like%20to%20plan%20a%20trip." target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp"><img src="/figma/itinerary/mobile-enquiry-whatsapp.svg" alt="" /></a><a href="tel:+917065780780" aria-label="Call Deshaatan"><img src="/figma/itinerary/mobile-enquiry-call.svg" alt="" /></a></div><div className={s.mobileBarBottom}><div className={s.mobilePrice}><small>From</small><div><strong>₹{price}</strong><span>/person</span></div></div><button className={s.mobileEnquire} onClick={() => enquire()}>Send Enquire</button></div></div>
+    <div className={s.desktopBar}><nav aria-label="Quick trip sections">{labels.map((label) => <a key={label} href={`#${sectionId(label)}`} aria-current={active === sectionId(label) ? "location" : undefined}><Asset name={`2179-3658-${icons[["Overview","Itinerary","Inclusions","Reviews","FAQs"].indexOf(label)]}`} />{label === "FAQs" ? "FAQ’s" : label}</a>)}</nav><div className={s.floatingPrice}><div><strong>₹{price}</strong><span> for 2 people</span></div><small>Excluding applicable taxes</small></div><button className={s.orangeButton} onClick={() => enquire()}>Send Enquiry</button></div>
+    <div className={s.mobileBar}><div className={s.mobileBarTop}><div><p>Want to change this trip?</p><small>Our travel expert can help</small></div><a className={s.whatsappContact} href={whatsapp} target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp"><img src="/figma/itinerary/mobile-enquiry-whatsapp.svg" alt="" /></a><a href="tel:+917065780780" aria-label="Call Deshaatan"><img src="/figma/itinerary/mobile-enquiry-call.svg" alt="" /></a></div><div className={s.mobileBarBottom}><div className={s.mobilePrice}><small>From</small><div><strong>₹{price}</strong><span> for 2 people</span></div></div><button className={s.mobileEnquire} onClick={() => enquire()}>Send Enquiry</button></div></div>
   </aside>;
 }
 
 export default function TourDetail({ tour }: { tour: Tour }) {
-  const {visibility,tourPackages}=useCMSContent();
+  const {visibility,tourPackages,homePage}=useCMSContent();
   const isVisible=(name:string)=>sectionVisible(visibility,"itinerary",name) && tour.sectionVisibility?.[name]!==false;
   const visibleTabs=sections.filter(label=>isVisible(sectionId(label)));
   const photos=tour.photos?.length?tour.photos:defaultPhotos;
@@ -172,7 +173,8 @@ export default function TourDetail({ tour }: { tour: Tour }) {
     const update = () => {
       scheduled = false;
       const overviewTop = overviewRef.current?.getBoundingClientRect().top ?? Infinity;
-      setFloating(overviewTop <= 160);
+      const footerTop = document.querySelector(".site-footer")?.getBoundingClientRect().top ?? Infinity;
+      setFloating(overviewTop <= 160 && footerTop > window.innerHeight - 60);
       let current = "overview";
       for (const label of sections) { const element = document.getElementById(sectionId(label)); if (element && element.getBoundingClientRect().top <= 210) current = sectionId(label); }
       setActive(current);
@@ -191,10 +193,14 @@ export default function TourDetail({ tour }: { tour: Tour }) {
     try { await navigator.clipboard.writeText(window.location.href.split("#")[0]); setNotice("Tour link copied."); } catch (error) { if (!(error instanceof DOMException && error.name === "AbortError")) setNotice("Please copy the tour address from your browser to share it."); }
   }
   function save() { const next = !saved; setSaved(next); try {localStorage.setItem(`saved-tour:${tour.slug}`, String(next));} catch {setNotice("Saved for this visit; browser storage is unavailable.");} }
-  const related = ["kashmir-winter", "manali-kasol", "goa-beach", "golden-triangle"].flatMap((id, index) => {
-    const trip = tourPackages.find(packageItem => packageItem.id === id);
-    return trip && matchesTripDuration(trip.days, relatedDuration) ? [{...trip, index}] : [];
-  });
+  const currentTrip = tourPackages.find(item => item.id === tour.slug);
+  const related = tourPackages
+    .filter(item => item.id !== tour.slug && item.image)
+    .map(item => ({...item, score: (currentTrip && item.destination && item.destination === currentTrip.destination ? 2 : 0) + (currentTrip && item.types.some(type => currentTrip.types.includes(type)) ? 1 : 0)}))
+    .sort((a, b) => b.score - a.score)
+    .filter(item => matchesTripDuration(item.days, relatedDuration))
+    .slice(0, 8)
+    .map((item, index) => ({...item, index}));
   return <div className={s.page}>
     {writeReviewOpen && <WriteReviewPopup title={tour.title} slug={tour.slug} onClose={() => setWriteReviewOpen(false)} />}
     <a className="skip-link" href="#tour-content">Skip to itinerary</a>
@@ -206,16 +212,16 @@ export default function TourDetail({ tour }: { tour: Tour }) {
       <div className={s.topGrid} style={!isVisible("gallery")||!isVisible("enquiry")?{gridTemplateColumns:"minmax(0,1fr)"}:undefined}>{isVisible("gallery") && <div className={s.gallery}>
         <button className={s.mainPhoto} onClick={() => {setGalleryIndex(0); setDialog("gallery");}} aria-label={`Open ${tour.title} photo gallery`}><Image src={photos[0]} alt={tour.title} fill priority quality={90} sizes="(max-width: 700px) 440px, (max-width: 1100px) 65vw, 634px" /></button>
         <div className={s.gallerySide}>{photos.length>1 && <button className={s.secondaryPhoto} onClick={() => {setGalleryIndex(1);setDialog("gallery");}} aria-label="View all tour photos"><Image src={photos[1]} alt={tour.title} fill quality={90} sizes="(max-width: 700px) 222px, 340px" /><span><Asset name="2032-4167-imgClarityImageGalleryLine" />View all</span></button>}
-          {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {tour.reviews[0].date}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{Array.from({length: tour.reviews[0].rating}, (_, i) => <Asset key={i} name="2032-4282-imgIcon" />)}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
+          {isVisible("reviews") && isVisible("featuredReview") && tour.reviews[0] && <a className={s.quote} href="#reviews" aria-label="Read traveller reviews"><Asset name="2032-4282-img" /><p>{tour.reviews[0].text}</p><footer>{tour.reviews[0].name} | {tour.reviews[0].date}<div><span className={s.blueStars} role="img" aria-label={`${tour.reviews[0].rating} out of 5 stars`}>{"★".repeat(Math.max(1,Math.min(5,tour.reviews[0].rating)))}</span><span>{tour.reviews[0].rating} - {tour.reviews[0].rating === 5 ? "Excellent" : "Traveller rating"}</span></div></footer></a>}
         </div>
-      </div>}{isVisible("enquiry") && <EnquiryForm title={tour.title} message={message} onReady={setNotice} />}</div>
+      </div>}{isVisible("enquiry") && <EnquiryForm title={tour.title} price={tour.price} message={message} onReady={setNotice} />}</div>
       <div className={s.contentColumn}>
         {isVisible("navigation") && visibleTabs.length>0 && <nav className={s.tabs} aria-label="Trip sections">{visibleTabs.map(label => <a key={label} href={`#${sectionId(label)}`} aria-current={active === sectionId(label) ? "location" : undefined}>{label}</a>)}</nav>}
         {(isVisible("overview") || isVisible("highlights")) && <section id="overview" ref={overviewRef} className={s.overview}><Heading>Trip Highlights</Heading>{isVisible("overview") && (tour.overview ? <p className={s.overviewCopy}>{overviewOpen || tour.overview.length <= 400 ? tour.overview : `${tour.overview.slice(0, 400)}…`} {tour.overview.length > 400 && <button aria-expanded={overviewOpen} onClick={() => setOverviewOpen(!overviewOpen)}>{overviewOpen ? "Read less" : "Read more"}</button>}</p> : <MissingDetail onEnquire={enquire} />)}{isVisible("highlights") && <ul className={s.highlights}>{tour.highlights.map(text => <li key={text}><Asset name="2032-4691-imgIcon" />{text}</li>)}</ul>}</section>}
         {isVisible("itinerary") && <Itinerary tour={tour} enquire={enquire} />}
         <div className={s.inclusionsGrid} style={!isVisible("inclusions")||!isVisible("exclusions")?{gridTemplateColumns:"minmax(0,1fr)"}:undefined}>{isVisible("inclusions") && <section id="inclusions"><Heading>What&apos;s inside the package?</Heading><h3>Inclusions</h3><div className={s.desktop}><Checklist items={tour.inclusions} /></div><div className={s.mobile}><Checklist items={tour.mobileInclusions} /></div></section>}{isVisible("exclusions") && <section id="exclusions"><h3>Exclusions</h3><div className={s.desktop}><Checklist items={tour.exclusions} excluded /></div><div className={s.mobile}><Checklist items={tour.mobileExclusions} excluded /></div></section>}</div>
         {isVisible("faqs") && <section id="faqs" className={s.faqs}><details className={s.faqWrapper} ref={faqRef} open><summary><Heading>FAQs</Heading><img className={s.mobile} src="/figma/itinerary/policy-chevron.svg" alt="" /></summary><div className={s.faqList}>{tour.faqs.map((faq, i) => <details key={faq.question} open={i === 0}><summary>{faq.question}<img className={s.faqChevron} src="/figma/itinerary/faq-chevron.svg" alt="" /></summary>{faq.answer ? <p>{faq.answer}</p> : <MissingDetail onEnquire={enquire} />}</details>)}</div></details></section>}
-{isVisible("reviews") && <section id="reviews" className={s.reviews}><Heading action={<div className={s.reviewHeadingActions}><button className={s.writeReviewButton} onClick={() => setWriteReviewOpen(true)}><img src="/figma/review/pen.svg" alt="" />Write a review</button></div>}>Reviews ({reviewCount})</Heading><div className={s.reviewSummary}><div className={s.summaryTop}><div className={s.score}><small>{reviewCount?'Traveller rating':'No reviews yet'}</small><strong>{reviewCount?average.toFixed(1):'—'}</strong><Stars rating={average} /></div><div className={s.histogram}>{sentiment.map((value, i) => <div key={i}><b>{value}%</b><span className={value ? s.fullBar : s.emptyBar} /><img src={`/figma/itinerary/sentiment-${i}.png`} alt={["Positive", "Neutral", "Negative"][i]} /></div>)}</div></div><div className={s.googleReviews}><a href="https://www.google.com/search?q=Deshaatan+Private+Limited+reviews" target="_blank" rel="noreferrer"><img src="/figma/itinerary/google.svg" alt="" />Read all reviews on Google<img src="/figma/itinerary/external-link.svg" alt="" /></a><p>Reviews for Deshaatan Private Limited, collected by Google.</p></div></div><div className={`${s.reviewCards} ${allReviews ? s.allReviews : ""}`}>{tour.reviews.map((review, i) => <ReviewCard key={review.name} review={review} index={i} />)}</div>{reviewCount>0 && <button className={s.allReviewsButton} onClick={() => setAllReviews(!allReviews)}>{allReviews ? "Show fewer reviews" : "See all reviews"}</button>}</section>}
+{isVisible("reviews") && <section id="reviews" className={s.reviews}><Heading action={<div className={s.reviewHeadingActions}><button className={s.writeReviewButton} onClick={() => setWriteReviewOpen(true)}><img src="/figma/review/pen.svg" alt="" />Write a review</button></div>}>Reviews ({reviewCount})</Heading><div className={s.reviewSummary}><div className={s.summaryTop}><div className={s.score}><small>{reviewCount?'Traveller rating':'No reviews yet'}</small><strong>{reviewCount?average.toFixed(1):'—'}</strong><Stars rating={average} /></div><div className={s.histogram}>{sentiment.map((value, i) => <div key={i}><b>{value}%</b><span className={value ? s.fullBar : s.emptyBar} /><img src={`/figma/itinerary/sentiment-${i}.png`} alt={["Positive", "Neutral", "Negative"][i]} /></div>)}</div></div><div className={s.googleReviews}><a href="https://www.google.com/search?q=Deshaatan+Private+Limited+reviews" target="_blank" rel="noreferrer"><img src="/figma/itinerary/google.svg" alt="" />Read all reviews on Google<img src="/figma/itinerary/external-link.svg" alt="" /></a><p>Reviews shared by Deshaatan travellers.</p></div></div><div className={`${s.reviewCards} ${allReviews ? s.allReviews : ""}`}>{tour.reviews.map((review, i) => <ReviewCard key={review.name} review={review} index={i} />)}</div>{reviewCount>0 && <button className={s.allReviewsButton} onClick={() => setAllReviews(!allReviews)}>{allReviews ? "Show fewer reviews" : "See all reviews"}</button>}</section>}
         {isVisible("signup") && <div className={s.signup}><Asset name="2032-4503-imgVector" /><strong>Sign up to enjoy 10% off your first 2 bookings</strong><button className={s.signupButton} onClick={() => setModal({kind:"login",title:"Welcome to Deshaatan"})}>Sign up now</button><a className={s.signupTerms} href="/terms-and-conditions">T&amp;Cs apply</a></div>}
         {isVisible("policies") && <section className={s.policies} aria-label="Booking policies">{tour.policies?.map((policy, i) => <details key={`${policy.title}-${i}`}><summary>{policy.title}<img className={s.policyChevron} src="/figma/itinerary/policy-chevron.svg" alt="" /></summary>{policy.content ? <p style={{whiteSpace: 'pre-line'}}>{policy.content}</p> : <MissingDetail onEnquire={enquire} />}</details>)}</section>}
       </div>
@@ -225,18 +231,18 @@ export default function TourDetail({ tour }: { tour: Tour }) {
           <DurationTabs value={relatedDuration} onChange={setRelatedDuration} className={s.durationTabs} label="Related trip duration" />
           <div className={s.relatedArrows}><img src="/figma/itinerary/related-arrows.svg" alt="" /><button aria-label="Previous related destinations" onClick={() => relatedRef.current?.scrollBy({left:-371, behavior:"smooth"})} /><button aria-label="Next related destinations" onClick={() => relatedRef.current?.scrollBy({left:371, behavior:"smooth"})} /></div>
         </div>
-        <div className={s.relatedCards} ref={relatedRef} aria-live="polite">{related.map(({title, days, price, previousPrice, id, image, index: i}) => <article key={id}>
-          <div className={s.relatedMedia}><button className={s.relatedPhoto} onClick={() => {setModal({kind:"enquiry",title});}}><Image src={image.startsWith("/")||image.startsWith("http")?image:`/figma/packages/${image}`} alt={title} width={336} height={336} quality={90} sizes="(max-width: 700px) 270px, 336px" /><img className={s.relatedDots} src={`/figma/${["imgGroup598","imgGroup601","imgGroup602","imgGroup599"][i]}.svg`} alt="" /></button><ShareMenu title={title} icon="imgShare2" onCopy={async name => {try {await navigator.clipboard.writeText(`${name} — ${window.location.origin}/#destinations`);setNotice("Package link copied.");} catch {setNotice("You can share this page using the address in your browser.");}}} /></div>
-          <div className={s.relatedMeta}><b>4.5 <small>/5</small></b><span>│ {String(days).padStart(2, "0")} days & {String(days - 1).padStart(2, "0")} nights</span></div>
-          <h3>{title}</h3>
-          <div className={s.relatedPrice}><div><del>₹{previousPrice.toLocaleString("en-IN")}</del><p><strong>₹{price.toLocaleString("en-IN")}</strong><small>per person</small></p></div><button onClick={() => {setModal({kind:"enquiry",title});}}>Request Callback</button></div>
+        <div className={s.relatedCards} ref={relatedRef} aria-live="polite">{related.map(({title, days, price, previousPrice, id, image, href}) => <article key={id}>
+          <div className={s.relatedMedia}><Link className={s.relatedPhoto} href={href || `/tours/${id}`}><Image src={image.startsWith("/")||image.startsWith("http")?image:`/figma/packages/${image}`} alt={title} width={336} height={336} quality={90} sizes="(max-width: 700px) 270px, 336px" /></Link><ShareMenu title={title} icon="imgShare2" onCopy={async name => {try {await navigator.clipboard.writeText(`${name} — ${window.location.origin}/#destinations`);setNotice("Package link copied.");} catch {setNotice("You can share this page using the address in your browser.");}}} /></div>
+          <div className={s.relatedMeta}><span>{days - 1}N / {days}D</span></div>
+          <h3><Link href={href || `/tours/${id}`}>{title}</Link></h3>
+          <div className={s.relatedPrice}><div>{previousPrice > price && <del>₹{previousPrice.toLocaleString("en-IN")}</del>}<p><strong>₹{price.toLocaleString("en-IN")}</strong><small>for 2 people</small></p></div><button onClick={() => {setModal({kind:"enquiry",title});}}>Get a callback</button></div>
         </article>)}</div>
       </section>}
       <div className={s.cityLinks}>{linkSections.filter((_,i)=>isVisible(i===0?"attractions":"activities")).map((section,i) => <section key={i}><h2>{section.title}</h2><TourLinks links={section.links} onEnquire={title => setModal({kind:"enquiry",title})} /></section>)}</div>
       <div className={s.mobileRelated}>{linkSections.filter((_,i)=>isVisible(i===0?"attractions":"activities")).map((section,i) => <details key={i}><summary>{section.title}<img src="/figma/itinerary/policy-chevron.svg" alt="" /></summary><TourLinks links={section.links} onEnquire={title => setModal({kind:"enquiry",title})} /></details>)}</div>
     </main>
     <SiteFooter onInfo={openInfo} onRentCar={() => setModal({kind:"car-rental",title:"Rent A Car"})} />
-    <FloatingEnquiry labels={visibleTabs.filter(label=>label!=="Exclusions")} visible={floating&&isVisible("floatingEnquiry")} active={active} price={tour.price} enquire={enquire} />
+    <FloatingEnquiry labels={visibleTabs.filter(label=>label!=="Exclusions")} visible={floating&&isVisible("floatingEnquiry")} active={active} price={tour.price} whatsapp={homePage.enquiry.whatsappURL} enquire={enquire} />
     <dialog className={s.dialog} ref={dialogRef} onCancel={() => setDialog(null)} onClick={event => {if (event.target === event.currentTarget) setDialog(null);}} aria-label={`${tour.title} photo gallery`} onKeyDown={event => {if (dialog === "gallery" && ["ArrowLeft", "ArrowRight"].includes(event.key)) {event.preventDefault();setGalleryIndex(i => (i + (event.key === 'ArrowLeft' ? -1 : 1) + photos.length) % photos.length);}}}><button className={s.closeDialog} aria-label="Close dialog" onClick={() => setDialog(null)}>×</button>{dialog === "gallery" ? <div className={s.lightbox}><Image src={photos[galleryIndex]} alt={`${tour.title} photo ${galleryIndex + 1}`} width={1268} height={972} quality={90} sizes="90vw" /><div><button aria-label="Previous photo" onClick={() => setGalleryIndex(i => (i - 1 + photos.length) % photos.length)}>‹</button><span>{galleryIndex + 1} / {photos.length}</span><button aria-label="Next photo" onClick={() => setGalleryIndex(i => (i + 1) % photos.length)}>›</button></div></div> : null}</dialog>
     <SiteDialog modal={modal} setModal={setModal} onNotice={setNotice} />
     {notice && <div className={s.notice} role="status">{notice}</div>}
