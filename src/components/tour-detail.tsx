@@ -102,9 +102,9 @@ function EnquiryForm({ title, message, onReady, price }: { title: string; messag
       {price && <div className={s.formPrice}><span>From</span><strong>₹{price}</strong><span>for 2 people</span></div>}
     </div>
     <div className={s.formBody}>
-      <label className={s.field}><span>Full name <b>*</b></span><input name="name" autoComplete="name" placeholder="Your full name" required /></label>
-      <div className={s.phoneRow}><label className={s.country}><span className={s.srOnly}>Country code</span><select name="country" autoComplete="tel-country-code" defaultValue="+91"><option>+91</option><option>+1</option><option>+44</option><option>+61</option><option>+971</option></select><img src="/figma/itinerary/form-chevron.svg" alt="" /></label><label className={s.field}><span>Phone number <b>*</b></span><input name="phone" type="tel" inputMode="tel" autoComplete="tel-national" placeholder="10-digit mobile number" pattern="[0-9 ()-]{7,20}" required /></label></div>
-      <label className={s.field}><span>Email <b>*</b></span><input name="email" type="email" autoComplete="email" placeholder="you@example.com" required /></label>
+      <label className={s.field}><span>Full name <b>*</b></span><input name="name" autoComplete="name" placeholder=" " required /></label>
+      <div className={s.phoneRow}><label className={s.country}><span className={s.srOnly}>Country code</span><select name="country" autoComplete="tel-country-code" defaultValue="+91"><option>+91</option><option>+1</option><option>+44</option><option>+61</option><option>+971</option></select><img src="/figma/itinerary/form-chevron.svg" alt="" /></label><label className={s.field}><span>Phone number <b>*</b></span><input name="phone" type="tel" inputMode="tel" autoComplete="tel-national" placeholder=" " pattern="[0-9 ()-]{7,20}" required /></label></div>
+      <label className={s.field}><span>Email <b>*</b></span><input name="email" type="email" autoComplete="email" placeholder=" " required /></label>
       <div className={s.formRow}>
         <TravelDateField />
         <TravellerCountField />
