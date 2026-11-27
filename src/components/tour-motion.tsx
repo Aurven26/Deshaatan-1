@@ -10,7 +10,7 @@ const reveals: readonly RevealTarget[] = [
   { selector: '[data-m="form"]', variant: "slide-left" },
   { selector: '[data-m="section-head"]' },
   { selector: '[data-m="highlights"] > li', stagger: 50 },
-  { selector: '[data-m="days"] > *', variant: "slide-left", stagger: 60 },
+  { selector: '[data-m="days"] > div', variant: "slide-left", stagger: 60 },
   { selector: '[data-m="end-trip"]', variant: "wipe" },
   { selector: '[data-m="checklist"] > li', variant: "fade-in", stagger: 40 },
   { selector: '[data-m="faq"] > details', stagger: 50 },
@@ -37,7 +37,7 @@ export default function TourMotion() {
       const days = document.querySelector<HTMLElement>('[data-m="days"]');
       if (days) {
         const rect = days.getBoundingClientRect();
-        const items = [...days.querySelectorAll<HTMLElement>(':scope > *')];
+        const items = [...days.querySelectorAll<HTMLElement>(':scope > div')];
         // Each dot sits on the centre of its day header; the line runs from the first dot to the last.
         const centres = items.map(day => {
           const head = day.querySelector<HTMLElement>("h3 button");
@@ -51,7 +51,9 @@ export default function TourMotion() {
           days.style.setProperty("--line-len", `${Math.max(0, last - first)}px`);
           const reading = window.innerHeight * 0.55 - rect.top;
           routeTarget = Math.min(1, Math.max(0, (reading - first) / Math.max(1, last - first)));
-          items.forEach((day, i) => { day.dataset.passed = String(centres[i] <= reading + 1); });
+          let current = -1;
+          items.forEach((day, i) => { const passed = centres[i] <= reading + 1; day.dataset.passed = String(passed); if (passed) current = i; });
+          items.forEach((day, i) => { day.dataset.current = String(i === current); });
         }
       }
     };
