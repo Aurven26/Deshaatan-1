@@ -541,7 +541,7 @@
   .container { display: grid; grid-template-columns: minmax(0, 1fr) 370px; column-gap: 20px; }
   .container > * { grid-column: 1 / -1; }
   .container > .topGrid { display: contents; }
-  .container > .topGrid > .gallery { grid-column: 1; }
+  .container > .topGrid > .gallery { grid-column: 1; margin-bottom: 24px; }
   .container > .topGrid > .enquiry { grid-column: 2; grid-row: span 2; position: sticky; top: 100px; align-self: start; }
   .container > .contentColumn { grid-column: 1; width: auto; max-width: none; }
   .floating { display: none; }
